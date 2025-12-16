@@ -55,6 +55,6 @@ public class Post {
     private Contratante contratante;
 
     @ManyToOne
-    @JoinColumn(name = "dev_aceito_id")
-    private Desenvolvedor devAceito;
+    @JoinColumn(name = "desenvolvedor_id")
+    private Desenvolvedor desenvolvedor;
 }
