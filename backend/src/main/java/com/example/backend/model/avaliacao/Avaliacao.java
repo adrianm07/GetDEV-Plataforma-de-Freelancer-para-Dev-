@@ -1,0 +1,20 @@
+package com.example.backend.model.avaliacao;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Embeddable
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+public class Avaliacao {
+
+    @Column(name = "nota")
+    private Integer nota;
+
+    @Column(name = "comentario")
+    private String comentario;
+}
