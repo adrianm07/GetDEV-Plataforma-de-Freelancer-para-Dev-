@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
+@Table(name = "solicitacoes")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -33,5 +34,6 @@ public class Solicitacao {
     @Enumerated(EnumType.STRING)
     private StatusPost status;
 
-    private Date data;
+    @Column(name = "data_criacao")
+    private Date dataCriacao;
 }

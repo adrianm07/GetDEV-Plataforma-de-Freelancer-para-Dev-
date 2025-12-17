@@ -1,0 +1,9 @@
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+CREATE TABLE IF NOT EXISTS solicitacoes(
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    dev_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    posts_id UUID REFERENCES posts(id) ON DELETE CASCADE,
+    status VARCHAR(20) DEFAULT 'PENDENTE',
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
