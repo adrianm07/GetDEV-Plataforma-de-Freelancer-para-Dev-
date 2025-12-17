@@ -33,7 +33,7 @@ public class Post {
     @Column(name = "data_criacao")
     private Date dataCriacao;
 
-    @Column(name = "data_Conclusao")
+    @Column(name = "data_conclusao")
     private Date dataConclusao;
 
     @Embedded
