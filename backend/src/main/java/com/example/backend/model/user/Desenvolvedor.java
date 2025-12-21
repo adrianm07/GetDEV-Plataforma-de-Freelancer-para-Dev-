@@ -27,4 +27,6 @@ public class Desenvolvedor extends User {
     @OneToMany(mappedBy = "desenvolvedor", cascade = CascadeType.ALL)
     private List<Solicitacao> solicitacoes;
 
+
+
 }

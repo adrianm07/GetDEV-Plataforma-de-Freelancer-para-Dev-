@@ -28,4 +28,5 @@ public abstract class User {
 
     @Column(name = "foto_url")
     private String fotoUrl;
+
 }
