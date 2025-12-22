@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -29,4 +31,15 @@ public abstract class User {
     @Column(name = "foto_url")
     private String fotoUrl;
 
+    private String tecnologias;
+
+    @Transient
+    public String getRole() {
+        return this.getClass().getSimpleName().toUpperCase();
+    }
+
+    @Transient
+    public List<String> getTecnologias() {
+        return new ArrayList<>(List.of(this.tecnologias.split(",")));
+    }
 }
