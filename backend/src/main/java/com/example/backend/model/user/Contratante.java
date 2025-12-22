@@ -23,5 +23,4 @@ public class Contratante extends User {
     @OneToMany(mappedBy = "contratante", cascade = CascadeType.ALL)
     private List<Post> posts;
 
-
 }
