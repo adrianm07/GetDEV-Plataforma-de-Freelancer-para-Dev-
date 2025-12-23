@@ -7,5 +7,6 @@ CREATE TABLE IF NOT EXISTS users(
     senha VARCHAR(60) NOT NULL,
     telefone VARCHAR(20) NOT NULL,
     foto_url TEXT,
-    tipo_usuario VARCHAR(20) NOT NULL
+    tipo_usuario VARCHAR(20) NOT NULL,
+    tecnologias TEXT
     );
