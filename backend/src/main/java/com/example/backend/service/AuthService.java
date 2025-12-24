@@ -2,13 +2,17 @@ package com.example.backend.service;
 
 import com.example.backend.dto.LoginRequestDTO;
 import com.example.backend.dto.LoginResponseDTO;
+import com.example.backend.model.user.Desenvolvedor;
 import com.example.backend.model.user.User;
 import com.example.backend.repositories.UserRepository;
 import com.example.backend.security.TokenService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AuthService {
@@ -37,5 +41,15 @@ public class AuthService {
         String token = tokenService.generateToken(user);
 
         return new LoginResponseDTO(token);
+    }
+
+    protected Desenvolvedor getDesenvolvedorAutenticado() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!(user instanceof Desenvolvedor desenvolvedor)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "Usuário não autorizado");
+        }
+        return desenvolvedor;
     }
 }
