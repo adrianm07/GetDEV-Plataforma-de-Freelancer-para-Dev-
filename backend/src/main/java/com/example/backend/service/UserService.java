@@ -7,8 +7,11 @@ import com.example.backend.model.user.Contratante;
 import com.example.backend.model.user.Desenvolvedor;
 import com.example.backend.model.user.User;
 import com.example.backend.repositories.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -43,7 +46,17 @@ public class UserService {
     }
 
     public void update(UUID id, UserUpdateRequest request) {
-        User user = userRepository.findById(id).orElseThrow(()-> new RuntimeException("Usuário não encontrado"));
+
+        User usuarioLogado = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(!usuarioLogado.getId().equals(id)){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sem permissão para editar esse usuário");
+        }
+
+        User user = userRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Usuário não encontrado"));
+
+
+
         if(request.nome()!=null){
             user.setNome(request.nome());
         }

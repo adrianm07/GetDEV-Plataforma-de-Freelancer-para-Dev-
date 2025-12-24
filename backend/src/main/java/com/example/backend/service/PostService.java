@@ -1,7 +1,9 @@
 package com.example.backend.service;
 
 import com.example.backend.dto.PostCreateDTO;
+import com.example.backend.dto.PostResponseDTO;
 import com.example.backend.dto.PostUpdateDTO;
+import com.example.backend.dto.SummaryPostDTO;
 import com.example.backend.model.enums.StatusPost;
 import com.example.backend.model.post.Post;
 import com.example.backend.model.post.Preco;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -98,6 +101,45 @@ public class PostService {
         }
 
         postRepository.delete(post);
+
+    }
+
+    public List<SummaryPostDTO> listarPostsDisponiveis(){
+
+        List<Post> posts = postRepository.findByStatus(StatusPost.DISPONIVEL);
+
+        return posts.stream().map(post -> new SummaryPostDTO(
+            post.getId(),
+            post.getTitulo(),
+            post.getResumo(),
+            post.getPreco().getMinimo(),
+            post.getPreco().getMaximo(),
+            post.getTecnologias(),
+            post.getPrazo(),
+            post.getStatus().name(),
+                post.getContratante().getNome()
+        )).toList();
+    }
+
+    public PostResponseDTO buscarPost(UUID idPost){
+        Post post = postRepository.findById(idPost).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Post não encontrado"));
+
+        return new PostResponseDTO(
+                post.getId(),
+                post.getTitulo(),
+                post.getResumo(),
+                post.getDescricao(),
+                post.getPrazo(),
+                post.getPreco().getMinimo(),
+                post.getPreco().getMaximo(),
+                post.getTecnologias(),
+                post.getStatus(),
+                post.getDataCriacao(),
+                post.getDataConclusao(),
+                post.getContratante().getId(),
+                post.getContratante().getNome(),
+                post.getDesenvolvedor()!=null ? post.getDesenvolvedor().getId() : null
+        );
 
     }
 
