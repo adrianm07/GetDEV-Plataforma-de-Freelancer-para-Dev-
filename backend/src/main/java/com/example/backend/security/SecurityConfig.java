@@ -1,5 +1,6 @@
 package com.example.backend.security;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +23,8 @@ public class SecurityConfig {
         this.securityFilter = securityFilter;
     }
 
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -30,12 +33,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
-                        //.anyRequest().permitAll()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

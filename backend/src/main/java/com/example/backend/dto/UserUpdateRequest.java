@@ -9,6 +9,12 @@ public record UserUpdateRequest(
                 message = "Telefone inválido"
         )
         String telefone,
+
+        @Pattern(
+                regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$",
+                message = "Senha deve ter no mínimo 8 caracteres, uma letra maiúscula e um número"
+        )
         String senha,
-        String fotoUrl) {
+        String fotoUrl,
+        String tecnologias) {
 }

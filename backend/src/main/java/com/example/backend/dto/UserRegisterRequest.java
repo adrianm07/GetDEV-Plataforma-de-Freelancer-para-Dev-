@@ -8,12 +8,15 @@ import jakarta.validation.constraints.Pattern;
 import java.util.UUID;
 
 public record UserRegisterRequest(
-        UUID id,
 
         @NotBlank (message = "Nome é obrigatório")
         String nome,
 
         @NotBlank (message = "Senha é obrigatória")
+        @Pattern(
+                regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$",
+                message = "Senha deve ter no mínimo 8 caracteres, uma letra maiúscula e um número"
+        )
         String senha,
 
         @NotBlank(message = "Email é obrigatório")
@@ -26,8 +29,11 @@ public record UserRegisterRequest(
                 message = "Telefone inválido"
         )
         String telefone,
-        String foto_url,
+        String fotoUrl,
 
         @NotBlank(message = "Tipo é obrigatório")
-        TipoUsuario tipoUsuario) {
+        TipoUsuario tipoUsuario
+)
+
+{
 }

@@ -28,7 +28,7 @@ public class Solicitacao {
     private Desenvolvedor desenvolvedor;
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "posts_id")
     private Post post;
 
     @Enumerated(EnumType.STRING)

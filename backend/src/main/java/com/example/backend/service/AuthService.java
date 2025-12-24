@@ -25,6 +25,9 @@ public class AuthService {
 
     public LoginResponseDTO login(LoginRequestDTO request) {
 
+        System.out.println("Email que chegou:" + request.email());
+        System.out.println("Senha que chegou: " + request.password());
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.email(), request.password()));
 

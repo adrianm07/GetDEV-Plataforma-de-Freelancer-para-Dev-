@@ -27,9 +27,6 @@ public class UserService {
         if(userRepository.existsByEmail(request.email())){
             throw new RuntimeException("Email ja cadastrado");
         }
-        if(request.senha().length() < 8){
-            throw new RuntimeException("Senha deve ter no minimo 8 caracteres");
-        }
 
         User user = crateUserByTipo(request.tipoUsuario());
 
@@ -37,9 +34,9 @@ public class UserService {
         user.setEmail(request.email());
         user.setSenha(passwordEncoder.encode(request.senha()));
         user.setTelefone(request.telefone());
-        user.setFotoUrl(request.foto_url());
+        user.setFotoUrl(request.fotoUrl());
 
-        System.out.println("FOto recbida" + request.foto_url());
+        //System.out.println("FOto recbida" + request.fotoUrl());
 
         userRepository.save(user);
 
@@ -57,9 +54,6 @@ public class UserService {
             user.setFotoUrl(request.fotoUrl());
         }
         if(request.senha()!=null){
-            if(request.senha().length()<8){
-                throw new RuntimeException("Senha deve ter no minimo 8 caracteres");
-            }
             user.setSenha(passwordEncoder.encode(request.senha()));
         }
         userRepository.save(user);
