@@ -2,10 +2,7 @@ package com.example.backend.model.user;
 
 import com.example.backend.model.post.Post;
 import com.example.backend.model.solicitacao.Solicitacao;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
