@@ -1,5 +1,6 @@
 package com.example.backend.controllers;
 
+import com.example.backend.dto.AvaliacaoDTO;
 import com.example.backend.dto.PostCreateDTO;
 import com.example.backend.dto.PostUpdateDTO;
 import com.example.backend.dto.SolicitacaoRequestDTO;
@@ -57,6 +58,14 @@ public class PostController {
     public ResponseEntity<Void> enviarSolicitacao(@PathVariable UUID postID){
 
         postService.registraSolicitacao(postID);
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('CONTRATANTE')")
+    @PostMapping("{postID}/avaliacao")
+    public ResponseEntity<Void> enviarAvaliacao(@PathVariable UUID postID, @RequestBody AvaliacaoDTO avaliacaoDTO){
+
+        postService.registraAvaliacao(postID, avaliacaoDTO);
         return ResponseEntity.ok().build();
     }
 }

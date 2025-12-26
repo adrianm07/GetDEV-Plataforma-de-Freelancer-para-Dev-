@@ -1,7 +1,9 @@
 package com.example.backend.service;
 
+import com.example.backend.dto.AvaliacaoDTO;
 import com.example.backend.dto.PostCreateDTO;
 import com.example.backend.dto.PostUpdateDTO;
+import com.example.backend.model.avaliacao.Avaliacao;
 import com.example.backend.model.enums.StatusPost;
 import com.example.backend.model.post.Post;
 import com.example.backend.model.post.Preco;
@@ -145,5 +147,27 @@ public class PostService {
         solicitacao.setDesenvolvedor(desenvolvedorAutenticado);
 
         solicitacaoRepository.save(solicitacao);
+    }
+
+    public void registraAvaliacao(UUID postID,  AvaliacaoDTO avaliacaoDTO){
+
+        Post post = postRepository.findById(postID).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post não encontrado!"));
+        Contratante contratanteLogado = getContratanteAutenticado();
+
+        if(!post.getContratante().getId().equals(contratanteLogado.getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Usuario logado diferente do autor do post!");
+        }
+
+        if(post.getStatus() != StatusPost.OCUPADO){
+            throw new RuntimeException("Post ainda não concluído!");
+        }
+        if(post.getDesenvolvedor() == null){
+            throw new RuntimeException("Não existe Desenvolvedor para avaliar!");
+        }
+        Avaliacao avaliacao = new Avaliacao();
+        avaliacao.setNota(avaliacaoDTO.nota());
+        avaliacao.setComentario(avaliacaoDTO.comentario());
+        post.setAvaliacao(avaliacao);
+        postRepository.save(post);
     }
 }
