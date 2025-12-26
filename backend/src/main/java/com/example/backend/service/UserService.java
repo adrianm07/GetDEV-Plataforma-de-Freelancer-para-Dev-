@@ -1,6 +1,7 @@
 package com.example.backend.service;
 
 import com.example.backend.dto.UserRegisterRequest;
+import com.example.backend.dto.UserResponseDTO;
 import com.example.backend.dto.UserUpdateRequest;
 import com.example.backend.model.enums.TipoUsuario;
 import com.example.backend.model.user.Contratante;
@@ -38,6 +39,8 @@ public class UserService {
         user.setSenha(passwordEncoder.encode(request.senha()));
         user.setTelefone(request.telefone());
         user.setFotoUrl(request.fotoUrl());
+        System.out.println("Tecnlogia que chegou:" + request.tecnologias());
+        user.setTecnologias(request.tecnologias());
 
         //System.out.println("FOto recbida" + request.fotoUrl());
 
@@ -77,5 +80,20 @@ public class UserService {
             case DESENVOLVEDOR -> new Desenvolvedor();
             case CONTRATANTE -> new Contratante();
         };
+    }
+
+    public UserResponseDTO getUser(UUID id){
+        User user = userRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Usuário nao encontrado"));
+
+        return new UserResponseDTO(
+                user.getId(),
+                user.getNome(),
+                user.getEmail(),
+                user.getTelefone(),
+                user.getFotoUrl(),
+                user.getTecnologias(),
+                user.getRole()
+        );
+
     }
 }
