@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Root as LabelPrimitive } from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
