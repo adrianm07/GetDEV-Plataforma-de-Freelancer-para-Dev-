@@ -1,22 +1,16 @@
 package com.example.backend.controllers;
 
 import com.example.backend.dto.PostCreateDTO;
-import com.example.backend.dto.PostResponseDTO;
 import com.example.backend.dto.PostUpdateDTO;
-import com.example.backend.dto.SummaryPostDTO;
 import com.example.backend.dto.SolicitacaoRequestDTO;
-import com.example.backend.dto.SummaryPostDTO;
-import com.example.backend.model.enums.Tecnologia;
 import com.example.backend.model.post.Post;
 import com.example.backend.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -74,6 +68,14 @@ public class PostController {
     public ResponseEntity<Void> enviarSolicitacao(@PathVariable UUID postID){
 
         postService.registraSolicitacao(postID);
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('CONTRATANTE')")
+    @PostMapping("{postID}/avaliacao")
+    public ResponseEntity<Void> enviarAvaliacao(@PathVariable UUID postID, @RequestBody AvaliacaoDTO avaliacaoDTO){
+
+        postService.registraAvaliacao(postID, avaliacaoDTO);
         return ResponseEntity.ok().build();
     }
 
