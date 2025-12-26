@@ -1,6 +1,7 @@
 package com.example.backend.model.solicitacao;
 
 import com.example.backend.model.enums.StatusPost;
+import com.example.backend.model.enums.StatusSolicitacao;
 import com.example.backend.model.post.Post;
 import com.example.backend.model.user.Desenvolvedor;
 import jakarta.persistence.*;
@@ -32,7 +33,7 @@ public class Solicitacao {
     private Post post;
 
     @Enumerated(EnumType.STRING)
-    private StatusPost status;
+    private StatusSolicitacao status;
 
     @Column(name = "data_criacao")
     private Date dataCriacao;

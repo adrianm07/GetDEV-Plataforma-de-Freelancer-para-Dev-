@@ -3,11 +3,12 @@ package com.example.backend.service;
 import com.example.backend.dto.PostCreateDTO;
 import com.example.backend.dto.PostResponseDTO;
 import com.example.backend.dto.PostUpdateDTO;
-import com.example.backend.dto.SummaryPostDTO;
 import com.example.backend.model.enums.StatusPost;
 import com.example.backend.model.post.Post;
 import com.example.backend.model.post.Preco;
+import com.example.backend.model.solicitacao.Solicitacao;
 import com.example.backend.model.user.Contratante;
+import com.example.backend.model.user.Desenvolvedor;
 import com.example.backend.model.user.User;
 import com.example.backend.repositories.PostRepository;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
@@ -24,9 +25,13 @@ import java.util.UUID;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final SolicitacaoRepository solicitacaoRepository;
+    private final AuthService authService;
 
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, SolicitacaoRepository solicitacaoRepository, AuthService authService) {
         this.postRepository = postRepository;
+        this.solicitacaoRepository = solicitacaoRepository;
+        this.authService = authService;
     }
 
     private Contratante getContratanteAutenticado() {
@@ -143,4 +148,41 @@ public class PostService {
 
     }
 
+    public void deleteDevAceito(UUID postID){
+
+        Post post = postRepository.findById(postID).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post não encontrado!"));
+        Contratante contratanteLogado = getContratanteAutenticado();
+
+        if(!post.getContratante().getId().equals(contratanteLogado.getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Usuario logado diferente do autor do post!");
+        }
+
+        if(post.getStatus() == StatusPost.OCUPADO){
+            throw new RuntimeException("Post já concluído, não é possivel excluir o Desenvolvedor!");
+        }
+
+        post.setDesenvolvedor(null);
+        post.setStatus(StatusPost.DISPONIVEL);
+        postRepository.save(post);
+    }
+
+    public void registraSolicitacao(UUID postID){
+
+        Post post = postRepository.findById(postID).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post não encontrado"));
+        Desenvolvedor desenvolvedorAutenticado = authService.getDesenvolvedorAutenticado();
+
+        if (post.getStatus() != StatusPost.DISPONIVEL) {
+            throw new RuntimeException("Post já ocupado ou concluído!");
+        }
+
+        if (solicitacaoRepository.existsByDesenvolvedorIdAndPostId(desenvolvedorAutenticado.getId(), postID)) {
+            throw new RuntimeException("Já foi enviada solicitação para este post!");
+        }
+
+        Solicitacao solicitacao = new Solicitacao();
+        solicitacao.setPost(post);
+        solicitacao.setDesenvolvedor(desenvolvedorAutenticado);
+
+        solicitacaoRepository.save(solicitacao);
+    }
 }
