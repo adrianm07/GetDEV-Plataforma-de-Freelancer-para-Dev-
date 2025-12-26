@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.dto.PostCreateDTO;
 import com.example.backend.dto.PostResponseDTO;
 import com.example.backend.dto.PostUpdateDTO;
+import com.example.backend.dto.SummaryPostDTO;
 import com.example.backend.model.enums.StatusPost;
 import com.example.backend.model.post.Post;
 import com.example.backend.model.post.Preco;
@@ -11,6 +12,7 @@ import com.example.backend.model.user.Contratante;
 import com.example.backend.model.user.Desenvolvedor;
 import com.example.backend.model.user.User;
 import com.example.backend.repositories.PostRepository;
+import com.example.backend.repositories.SolicitacaoRepository;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -185,4 +187,29 @@ public class PostService {
 
         solicitacaoRepository.save(solicitacao);
     }
+
+    public void concluirPost(UUID idPost){
+
+        User usuarioLogado = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Post post = postRepository.findById(idPost).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Post nao encontrado"));
+
+        if(post.getDesenvolvedor()==null){
+            throw new RuntimeException("Post nao possui desenvolvedor aceito");
+        }
+
+        boolean isContratanteAutor = usuarioLogado instanceof Contratante && post.getContratante().getId().equals(usuarioLogado.getId());
+        boolean isDevResponsavel = usuarioLogado instanceof Desenvolvedor && post.getDesenvolvedor().getId().equals(usuarioLogado.getId());
+
+        if(!isContratanteAutor && !isDevResponsavel){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Vocẽ nao tem permissão para concluir o post");
+        }
+
+        post.setStatus(StatusPost.CONCLUIDO);
+        post.setDataConclusao(new Date());
+
+        postRepository.save(post);
+
+    }
+
 }

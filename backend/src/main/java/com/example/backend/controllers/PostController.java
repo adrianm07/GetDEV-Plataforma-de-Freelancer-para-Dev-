@@ -46,6 +46,7 @@ public class PostController {
         return ResponseEntity.ok(postService.buscarPost(postID));
     }
 
+    @PreAuthorize("hasRole('CONTRATANTE')")
     @PutMapping("/{postID}")
     public ResponseEntity<Void> updatePost(@PathVariable UUID postID, @RequestBody PostUpdateDTO dto){
         postService.update(postID, dto);
@@ -74,4 +75,11 @@ public class PostController {
         postService.registraSolicitacao(postID);
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping("/{postID}/concluir")
+    public ResponseEntity<Void> concluirPost(@PathVariable UUID postID){
+        postService.concluirPost(postID);
+        return ResponseEntity.noContent().build();
+    }
+
 }
