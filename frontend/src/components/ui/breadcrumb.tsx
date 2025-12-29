@@ -102,8 +102,6 @@ function BreadcrumbPage({
   );
 }
 
-/* -------------------- Separator -------------------- */
-
 type BreadcrumbSeparatorProps = React.ComponentProps<"li">;
 
 function BreadcrumbSeparator({
@@ -123,8 +121,6 @@ function BreadcrumbSeparator({
     </li>
   );
 }
-
-/* -------------------- Ellipsis -------------------- */
 
 type BreadcrumbEllipsisProps = React.ComponentProps<"span">;
 
