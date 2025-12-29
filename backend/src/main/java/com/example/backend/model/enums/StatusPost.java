@@ -4,4 +4,5 @@ public enum StatusPost {
     DISPONIVEL,
     OCUPADO,
     CONCLUIDO;
+    //teste teste teste
 }
