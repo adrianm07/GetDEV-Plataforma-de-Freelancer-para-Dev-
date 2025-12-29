@@ -3,7 +3,7 @@
 import React, { type HTMLAttributes } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { XIcon } from "lucide-react";
-import { cn } from "./utils";
+import { cn } from "../utils";
 
 type DialogProps = React.ComponentProps<typeof DialogPrimitive.Root>;
 type DialogTriggerProps = React.ComponentProps<typeof DialogPrimitive.Trigger>;

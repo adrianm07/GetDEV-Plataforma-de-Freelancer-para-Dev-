@@ -3,7 +3,7 @@
 import type { ComponentProps } from "react";
 import * as AvatarPrimitive from "@radix-ui/react-avatar";
 
-import { cn } from "./utils";
+import { cn } from "../utils";
 
 type AvatarProps = ComponentProps<typeof AvatarPrimitive.Root>;
 
