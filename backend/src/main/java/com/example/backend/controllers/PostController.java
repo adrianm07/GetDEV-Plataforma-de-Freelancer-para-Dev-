@@ -6,6 +6,7 @@ import com.example.backend.dto.PostUpdateDTO;
 import com.example.backend.dto.SummaryPostDTO;
 import com.example.backend.dto.SolicitacaoRequestDTO;
 import com.example.backend.dto.SummaryPostDTO;
+import com.example.backend.model.enums.Tecnologia;
 import com.example.backend.model.post.Post;
 import com.example.backend.service.PostService;
 import jakarta.validation.Valid;
@@ -35,11 +36,11 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PreAuthorize("hasRole('CONTRATANTE')")
-    @GetMapping
-    public ResponseEntity<List<SummaryPostDTO>>listarPosts(){
-        return ResponseEntity.ok(postService.listarPostsDisponiveis());
-    }
+//    @PreAuthorize("hasRole('CONTRATANTE')")
+//    @GetMapping
+//    public ResponseEntity<List<SummaryPostDTO>>listarPosts(){
+//        return ResponseEntity.ok(postService.listarPostsDisponiveis());
+//    }
 
     @GetMapping("/{postID}")
     public ResponseEntity<PostResponseDTO> buscarPost(@PathVariable UUID postID){
@@ -81,5 +82,12 @@ public class PostController {
         postService.concluirPost(postID);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping
+    public ResponseEntity<List<SummaryPostDTO>> listar(@RequestParam(required = false)List<String> tecnologias){
+        List<SummaryPostDTO> posts = postService.listarComFiltro(tecnologias);
+        return ResponseEntity.ok(posts);
+    }
+
 
 }
