@@ -1,5 +1,5 @@
 import type { ComponentProps } from "react";
-import { cn } from "./utils";
+import { cn } from "../utils";
 
 type TableProps = ComponentProps<"table">;
 

@@ -3,7 +3,7 @@
 import React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
-import { cn } from "./utils";
+import { cn } from "../utils";
 
 type ClassNameProps = { className?: string };
 
