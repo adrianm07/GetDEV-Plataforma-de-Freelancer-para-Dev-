@@ -2,18 +2,13 @@ package com.example.backend.controllers;
 
 import com.example.backend.dto.AvaliacaoDTO;
 import com.example.backend.dto.PostCreateDTO;
-import com.example.backend.dto.PostResponseDTO;
 import com.example.backend.dto.PostUpdateDTO;
 import com.example.backend.dto.SummaryPostDTO;
-import com.example.backend.dto.SolicitacaoRequestDTO;
-import com.example.backend.dto.SummaryPostDTO;
-import com.example.backend.model.enums.Tecnologia;
-import com.example.backend.model.post.Post;
 import com.example.backend.service.PostService;
+import com.example.backend.service.SolicitacaoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,9 +20,11 @@ import java.util.UUID;
 public class PostController {
 
     private final PostService postService;
+    private final SolicitacaoService solicitacaoService;
 
-    public PostController(PostService postService) {
+    public PostController(PostService postService, SolicitacaoService solicitacaoService) {
         this.postService = postService;
+        this.solicitacaoService = solicitacaoService;
     }
 
     @PreAuthorize("hasRole('CONTRATANTE')")
@@ -43,10 +40,10 @@ public class PostController {
 //        return ResponseEntity.ok(postService.listarPostsDisponiveis());
 //    }
 
-    @GetMapping("/{postID}")
-    public ResponseEntity<PostResponseDTO> buscarPost(@PathVariable UUID postID){
-        return ResponseEntity.ok(postService.buscarPost(postID));
-    }
+//    @GetMapping("/{postID}")
+//    public ResponseEntity<PostResponseDTO> buscarPost(@PathVariable UUID postID){
+//        return ResponseEntity.ok(postService.buscarPost(postID));
+//    }
 
     @PreAuthorize("hasRole('CONTRATANTE')")
     @PutMapping("/{postID}")
@@ -99,4 +96,18 @@ public class PostController {
     }
 
 
+
+    @PreAuthorize("hasRole('CONTRATANTE')")
+    @PutMapping("solicitacoes/{solicitacaoID}/aceitar")
+    public ResponseEntity<Void> aceitarSolicitacao(@PathVariable UUID solicitacaoID){
+        solicitacaoService.aceitarSolicitacao(solicitacaoID);
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasRole('CONTRATANTE')")
+    @PutMapping("solicitacoes/{solicitacaoID}/recusar")
+    public ResponseEntity<Void> recusarSolicitacao(@PathVariable UUID solicitacaoID){
+        solicitacaoService.recusarSolicitacao(solicitacaoID);
+        return ResponseEntity.ok().build();
+    }
 }

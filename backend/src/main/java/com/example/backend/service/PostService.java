@@ -2,11 +2,10 @@ package com.example.backend.service;
 
 import com.example.backend.dto.AvaliacaoDTO;
 import com.example.backend.dto.PostCreateDTO;
-import com.example.backend.dto.PostResponseDTO;
 import com.example.backend.dto.PostUpdateDTO;
 import com.example.backend.dto.SummaryPostDTO;
+import com.example.backend.model.avaliacao.Avaliacao;
 import com.example.backend.model.enums.StatusPost;
-import com.example.backend.model.enums.Tecnologia;
 import com.example.backend.model.post.Post;
 import com.example.backend.model.post.Preco;
 import com.example.backend.model.solicitacao.Solicitacao;
@@ -15,14 +14,12 @@ import com.example.backend.model.user.Desenvolvedor;
 import com.example.backend.model.user.User;
 import com.example.backend.repositories.PostRepository;
 import com.example.backend.repositories.SolicitacaoRepository;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class PostService {
