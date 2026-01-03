@@ -6,7 +6,7 @@ import { Clock, CheckCircle, XCircle, Mail, Phone } from "lucide-react";
 
 import { Button } from "./ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
-import { DeveloperProfile } from "./profile/Developerprofile";
+import { DeveloperProfile } from "./profile/DeveloperProfilePreview";
 
 import type { Notification , NotificationStatus} from "../types/notification";
 import type { Developer } from "../types/developer";
