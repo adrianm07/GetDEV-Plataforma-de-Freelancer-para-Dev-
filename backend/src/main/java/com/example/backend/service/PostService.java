@@ -1,9 +1,6 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.AvaliacaoDTO;
-import com.example.backend.dto.PostCreateDTO;
-import com.example.backend.dto.PostUpdateDTO;
-import com.example.backend.dto.SummaryPostDTO;
+import com.example.backend.dto.*;
 import com.example.backend.model.avaliacao.Avaliacao;
 import com.example.backend.model.enums.StatusPost;
 import com.example.backend.model.post.Post;
