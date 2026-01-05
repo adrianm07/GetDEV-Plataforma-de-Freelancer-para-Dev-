@@ -1,32 +1,37 @@
 package com.example.backend.service;
 
+import com.example.backend.dto.AvaliacaoDTO;
 import com.example.backend.dto.PostCreateDTO;
-import com.example.backend.dto.PostResponseDTO;
 import com.example.backend.dto.PostUpdateDTO;
 import com.example.backend.dto.SummaryPostDTO;
+import com.example.backend.model.avaliacao.Avaliacao;
 import com.example.backend.model.enums.StatusPost;
 import com.example.backend.model.post.Post;
 import com.example.backend.model.post.Preco;
+import com.example.backend.model.solicitacao.Solicitacao;
 import com.example.backend.model.user.Contratante;
+import com.example.backend.model.user.Desenvolvedor;
 import com.example.backend.model.user.User;
 import com.example.backend.repositories.PostRepository;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import com.example.backend.repositories.SolicitacaoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class PostService {
 
     private final PostRepository postRepository;
+    private final SolicitacaoRepository solicitacaoRepository;
+    private final AuthService authService;
 
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, SolicitacaoRepository solicitacaoRepository, AuthService authService) {
         this.postRepository = postRepository;
+        this.solicitacaoRepository = solicitacaoRepository;
+        this.authService = authService;
     }
 
     private Contratante getContratanteAutenticado() {
@@ -104,43 +109,108 @@ public class PostService {
 
     }
 
-    public List<SummaryPostDTO> listarPostsDisponiveis(){
+    public void deleteDevAceito(UUID postID){
 
-        List<Post> posts = postRepository.findByStatus(StatusPost.DISPONIVEL);
+        Post post = postRepository.findById(postID).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post não encontrado!"));
+        Contratante contratanteLogado = getContratanteAutenticado();
 
-        return posts.stream().map(post -> new SummaryPostDTO(
-            post.getId(),
-            post.getTitulo(),
-            post.getResumo(),
-            post.getPreco().getMinimo(),
-            post.getPreco().getMaximo(),
-            post.getTecnologias(),
-            post.getPrazo(),
-            post.getStatus().name(),
-                post.getContratante().getNome()
-        )).toList();
+        if(!post.getContratante().getId().equals(contratanteLogado.getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Usuario logado diferente do autor do post!");
+        }
+
+        if(post.getStatus() == StatusPost.OCUPADO){
+            throw new RuntimeException("Post já concluído, não é possivel excluir o Desenvolvedor!");
+        }
+
+        post.setDesenvolvedor(null);
+        post.setStatus(StatusPost.DISPONIVEL);
+        postRepository.save(post);
     }
 
-    public PostResponseDTO buscarPost(UUID idPost){
-        Post post = postRepository.findById(idPost).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Post não encontrado"));
+    public void registraSolicitacao(UUID postID){
 
-        return new PostResponseDTO(
-                post.getId(),
-                post.getTitulo(),
-                post.getResumo(),
-                post.getDescricao(),
-                post.getPrazo(),
-                post.getPreco().getMinimo(),
-                post.getPreco().getMaximo(),
-                post.getTecnologias(),
-                post.getStatus(),
-                post.getDataCriacao(),
-                post.getDataConclusao(),
-                post.getContratante().getId(),
-                post.getContratante().getNome(),
-                post.getDesenvolvedor()!=null ? post.getDesenvolvedor().getId() : null
-        );
+        Post post = postRepository.findById(postID).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post não encontrado"));
+        Desenvolvedor desenvolvedorAutenticado = authService.getDesenvolvedorAutenticado();
+
+        if (post.getStatus() != StatusPost.DISPONIVEL) {
+            throw new RuntimeException("Post já ocupado ou concluído!");
+        }
+
+        if (solicitacaoRepository.existsByDesenvolvedorIdAndPostId(desenvolvedorAutenticado.getId(), postID)) {
+            throw new RuntimeException("Já foi enviada solicitação para este post!");
+        }
+
+        Solicitacao solicitacao = new Solicitacao();
+        solicitacao.setPost(post);
+        solicitacao.setDesenvolvedor(desenvolvedorAutenticado);
+
+        solicitacaoRepository.save(solicitacao);
+    }
+
+    public void concluirPost(UUID idPost){
+
+        User usuarioLogado = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Post post = postRepository.findById(idPost).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Post nao encontrado"));
+
+        if(post.getDesenvolvedor()==null){
+            throw new RuntimeException("Post nao possui desenvolvedor aceito");
+        }
+
+        boolean isContratanteAutor = usuarioLogado instanceof Contratante && post.getContratante().getId().equals(usuarioLogado.getId());
+        boolean isDevResponsavel = usuarioLogado instanceof Desenvolvedor && post.getDesenvolvedor().getId().equals(usuarioLogado.getId());
+
+        if(!isContratanteAutor && !isDevResponsavel){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Vocẽ nao tem permissão para concluir o post");
+        }
+
+        post.setStatus(StatusPost.CONCLUIDO);
+        post.setDataConclusao(new Date());
+
+        postRepository.save(post);
 
     }
 
+    public List<SummaryPostDTO> listarComFiltro(List<String> tecnologias){
+        List<Post> posts;
+        if(tecnologias==null || tecnologias.isEmpty()){
+            posts = postRepository.findByStatus(StatusPost.DISPONIVEL);
+        }else{
+            Set<Post> resultado = new HashSet<>();
+
+            for(String tech:tecnologias){
+                resultado.addAll(
+                        postRepository.findDisponiveisPorTecnologia(StatusPost.DISPONIVEL, tech)
+                );
+            }
+
+            posts = new ArrayList<>(resultado);
+
+        }
+
+        return posts.stream().map(SummaryPostDTO::fromEntity).toList();
+    }
+
+
+    public void registraAvaliacao(UUID postID,  AvaliacaoDTO avaliacaoDTO){
+
+        Post post = postRepository.findById(postID).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post não encontrado!"));
+        Contratante contratanteLogado = getContratanteAutenticado();
+
+        if(!post.getContratante().getId().equals(contratanteLogado.getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Usuario logado diferente do autor do post!");
+        }
+
+        if(post.getStatus() != StatusPost.OCUPADO){
+            throw new RuntimeException("Post ainda não concluído!");
+        }
+        if(post.getDesenvolvedor() == null){
+            throw new RuntimeException("Não existe Desenvolvedor para avaliar!");
+        }
+        Avaliacao avaliacao = new Avaliacao();
+        avaliacao.setNota(avaliacaoDTO.nota());
+        avaliacao.setComentario(avaliacaoDTO.comentario());
+        post.setAvaliacao(avaliacao);
+        postRepository.save(post);
+    }
 }

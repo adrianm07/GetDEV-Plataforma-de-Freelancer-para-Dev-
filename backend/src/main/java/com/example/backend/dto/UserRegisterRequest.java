@@ -30,6 +30,7 @@ public record UserRegisterRequest(
         )
         String telefone,
         String fotoUrl,
+        String tecnologias,
 
         @NotBlank(message = "Tipo é obrigatório")
         TipoUsuario tipoUsuario

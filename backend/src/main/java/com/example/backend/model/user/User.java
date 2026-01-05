@@ -40,6 +40,9 @@ public abstract class User {
 
     @Transient
     public List<String> getTecnologias() {
-        return new ArrayList<>(List.of(this.tecnologias.split(",")));
+        if(this.tecnologias!=null) {
+            return new ArrayList<>(List.of(this.tecnologias.split(",")));
+        }
+        return List.of();
     }
 }
