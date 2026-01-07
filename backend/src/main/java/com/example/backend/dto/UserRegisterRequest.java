@@ -29,6 +29,7 @@ public record UserRegisterRequest(
                 message = "Telefone inválido"
         )
         String telefone,
+        String  descricao,
         String fotoUrl,
         String tecnologias,
 

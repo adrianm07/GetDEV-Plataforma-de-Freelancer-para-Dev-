@@ -9,9 +9,9 @@ public record SummaryPostDTO(
         UUID id,
         String titulo,
         String resumo,
-        Integer precoMIn,
+        Integer precoMin,
         Integer precoMax,
-        String tecnlogias,
+        String tecnologias,
         String prazo,
         String status,
         String nomeContratante

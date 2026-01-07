@@ -5,7 +5,10 @@ import com.example.backend.dto.PostCreateDTO;
 import com.example.backend.dto.PostUpdateDTO;
 import com.example.backend.dto.SummaryPostDTO;
 import com.example.backend.model.avaliacao.Avaliacao;
+import com.example.backend.dto.*;
+import com.example.backend.model.avaliacao.Avaliacao;
 import com.example.backend.model.enums.StatusPost;
+import com.example.backend.model.enums.Tecnologia;
 import com.example.backend.model.post.Post;
 import com.example.backend.model.post.Preco;
 import com.example.backend.model.solicitacao.Solicitacao;
@@ -14,6 +17,7 @@ import com.example.backend.model.user.Desenvolvedor;
 import com.example.backend.model.user.User;
 import com.example.backend.repositories.PostRepository;
 import com.example.backend.repositories.SolicitacaoRepository;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -106,6 +110,45 @@ public class PostService {
         }
 
         postRepository.delete(post);
+
+    }
+
+    public List<SummaryPostDTO> listarPostsDisponiveis(){
+
+        List<Post> posts = postRepository.findByStatus(StatusPost.DISPONIVEL);
+
+        return posts.stream().map(post -> new SummaryPostDTO(
+            post.getId(),
+            post.getTitulo(),
+            post.getResumo(),
+            post.getPreco().getMinimo(),
+            post.getPreco().getMaximo(),
+            post.getTecnologias(),
+            post.getPrazo(),
+            post.getStatus().name(),
+                post.getContratante().getNome()
+        )).toList();
+    }
+
+    public PostResponseDTO buscarPost(UUID idPost){
+        Post post = postRepository.findById(idPost).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Post não encontrado"));
+
+        return new PostResponseDTO(
+                post.getId(),
+                post.getTitulo(),
+                post.getResumo(),
+                post.getDescricao(),
+                post.getPrazo(),
+                post.getPreco().getMinimo(),
+                post.getPreco().getMaximo(),
+                post.getTecnologias(),
+                post.getStatus(),
+                post.getDataCriacao(),
+                post.getDataConclusao(),
+                post.getContratante().getId(),
+                post.getContratante().getNome(),
+                post.getDesenvolvedor()!=null ? post.getDesenvolvedor().getId() : null
+        );
 
     }
 
