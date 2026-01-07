@@ -2,13 +2,19 @@ package com.example.backend.controllers;
 
 import com.example.backend.dto.AvaliacaoDTO;
 import com.example.backend.dto.PostCreateDTO;
+import com.example.backend.dto.PostResponseDTO;
 import com.example.backend.dto.PostUpdateDTO;
 import com.example.backend.dto.SummaryPostDTO;
+import com.example.backend.dto.SolicitacaoRequestDTO;
+import com.example.backend.dto.SummaryPostDTO;
+import com.example.backend.model.enums.Tecnologia;
+import com.example.backend.model.post.Post;
 import com.example.backend.service.PostService;
 import com.example.backend.service.SolicitacaoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
