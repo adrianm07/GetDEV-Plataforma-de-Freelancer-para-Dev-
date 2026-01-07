@@ -15,6 +15,7 @@ public record UserUpdateRequest(
                 message = "Senha deve ter no mínimo 8 caracteres, uma letra maiúscula e um número"
         )
         String senha,
+        String descricao,
         String fotoUrl,
         String tecnologias) {
 }

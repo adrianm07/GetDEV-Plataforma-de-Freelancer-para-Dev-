@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users(
     email VARCHAR(200) NOT NULL UNIQUE,
     senha VARCHAR(60) NOT NULL,
     telefone VARCHAR(20) NOT NULL,
+    descricao VARCHAR(200),
     foto_url TEXT,
     tipo_usuario VARCHAR(20) NOT NULL,
     tecnologias TEXT

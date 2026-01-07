@@ -38,6 +38,7 @@ public class UserService {
         user.setEmail(request.email());
         user.setSenha(passwordEncoder.encode(request.senha()));
         user.setTelefone(request.telefone());
+        user.setDescricao(request.descricao());
         user.setFotoUrl(request.fotoUrl());
         System.out.println("Tecnlogia que chegou:" + request.tecnologias());
         user.setTecnologias(request.tecnologias());
@@ -72,6 +73,13 @@ public class UserService {
         if(request.senha()!=null){
             user.setSenha(passwordEncoder.encode(request.senha()));
         }
+        if(request.descricao()!=null){
+            user.setDescricao(request.descricao());
+        }
+        if(request.tecnologias()!=null){
+            user.setTecnologias(request.tecnologias());
+        }
+
         userRepository.save(user);
     }
 
@@ -91,6 +99,7 @@ public class UserService {
                 user.getEmail(),
                 user.getTelefone(),
                 user.getFotoUrl(),
+                user.getDescricao(),
                 user.getTecnologias(),
                 user.getRole()
         );
