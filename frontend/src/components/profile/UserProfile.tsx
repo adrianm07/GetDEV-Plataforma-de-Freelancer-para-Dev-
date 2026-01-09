@@ -2,13 +2,13 @@ import { Mail, Phone} from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
 import type { UserProfileData } from "../../types/user";
-import type { Project } from "../../types/project";
+import type { SummaryPost } from "../../types/project";
 
 interface UserProfileProps {
   user: UserProfileData;
   canEdit?: boolean;
   onEditProfile?: () => void;
-  onProjectClick?: (project: Project) => void;
+  onProjectClick?: (summary: SummaryPost) => void;
 }
 
 export function UserProfile({
@@ -99,24 +99,27 @@ export function UserProfile({
         <div className="rounded-xl p-8 bg-gray-900 border border-purple-900/30">
           <h2 className="text-white mb-6">Projetos</h2>
 
-          {user.portfolio?.length ? (
+          {user.posts?.length ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {user.portfolio.map((project) => (
+              {user.posts.map((summary) => (
                 <div
-                  key={project.id}
-                  onClick={() => onProjectClick?.(project)}
+                  key={summary.id}
+                  onClick={() => onProjectClick?.(summary)}
                   className="cursor-pointer rounded-lg p-5 bg-black/40 border border-purple-900/30 hover:border-purple-600/50 transition"
                 >
                   <h3 className="text-white mb-2">
-                    {project.title}
+                    {summary.titulo}
                   </h3>
 
                   <p className="text-gray-400 mb-3">
-                    {project.description}
+                    {summary.resumo}
                   </p>
 
                   <div className="flex flex-wrap gap-2">
-                    {project.technologies?.map((tech) => (
+                  {summary.tecnologias
+                    ?.split(",")
+                    .map((tech) => tech.trim())
+                    .map((tech) => (
                       <span
                         key={tech}
                         className="px-2 py-1 text-sm bg-purple-900/20 rounded text-purple-300"
@@ -124,10 +127,11 @@ export function UserProfile({
                         {tech}
                       </span>
                     ))}
-                  </div>
+                </div>
                 </div>
               ))}
             </div>
+            
           ) : (
             <p className="text-gray-500">
               Nenhum projeto cadastrado.

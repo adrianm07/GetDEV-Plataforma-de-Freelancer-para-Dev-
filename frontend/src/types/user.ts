@@ -1,14 +1,16 @@
 import type { AccountType } from "./accountType";
-import type { Project } from "./project";
+import type {SummaryPost } from "./project";
 
 export interface UserProfileData {
   id: string;
   name: string;
   email: string;
+  phone: string,
+  description?: string,
   role: AccountType;
   photo?: string | null;
   skills?: string[];         
-  portfolio: Project[];
+  posts: SummaryPost[];
 }
 
 export interface PublicUser {
@@ -21,9 +23,11 @@ export interface EditableUserProfile {
   name: string;
   email: string;
   phone: string;
+description?: string;
   photo: string | null;
   accountType: AccountType;
   skills?: string[];
+
 }
 
 export interface UpdateUserProfilePayload {
@@ -31,6 +35,7 @@ export interface UpdateUserProfilePayload {
   email: string;
   phone: string;
   photo: string | null;
+  description?: string;
   skills?: string[];
   password?: string;
 }

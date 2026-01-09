@@ -1,8 +1,11 @@
-export interface Project {
-  id: number;
-  name: string;
-  description: string;
-  technologies: string[];
-  completedDate: string;
-  link?: string;
+export interface SummaryPost {
+  id: string;
+  titulo: string;
+  resumo: string;
+  precoMin: number;
+  precoMax: number;
+  tecnologias: string; // string como vem da API
+  prazo: string;
+  status: string;
+  nomeContratante: string;
 }

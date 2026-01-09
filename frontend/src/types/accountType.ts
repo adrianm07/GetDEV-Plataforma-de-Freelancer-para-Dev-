@@ -1,1 +1,1 @@
-export type AccountType = "developer" | "contractor";
+export type AccountType = "DESENVOLVEDOR" | "CONTRATANTE";

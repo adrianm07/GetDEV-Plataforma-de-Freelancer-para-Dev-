@@ -3,7 +3,7 @@ import { UserProfile } from "../../components/profile/UserProfile";
 import { EditProfile } from "../../components/profile/EditProfile";
 
 import type { UserProfileData, UpdateUserProfilePayload } from "../../types/user";
-import type { Project } from "../../types/project";
+import type { SummaryPost } from "../../types/project";
 
 import {
   getUserById,
@@ -13,9 +13,9 @@ import {
 import{mapUserToEditable} from "../../mapper/userMapper"
 
 // ID de quem to buscando
-const FIXED_USER_ID = "ab297627-3406-4f5b-9b8b-4707fe722484";
+const FIXED_USER_ID = "09bb654c-62c9-47f3-be2b-1fc61ad2463e";
 
-export function ProfilePage() {
+export default function ProfilePage() {
   const [user, setUser] = useState<UserProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +23,7 @@ export function ProfilePage() {
 
 
   //ID do cara logado
-  const loggedUserId = "ab297627-3406-4f5b-9b8b-4707fe722484";
+  const loggedUserId = "09bb654c-62c9-47f3-be2b-1fc61ad2463e";
 
   async function loadUser() {
     try {
@@ -53,15 +53,14 @@ export function ProfilePage() {
     try {
       await updateUserProfile(user.id, payload);
 
-      // 🔥 backend não retorna nada → recarrega o usuário
       await loadUser();
     } catch {
       alert("Erro ao atualizar perfil");
     }
   };
 
-  const handleProjectClick = (project: Project) => {
-    console.log("Projeto clicado:", project);
+  const handleProjectClick = (summary: SummaryPost) => {
+    console.log("Projeto clicado:", summary);
   };
 
   if (loading) return <div>Carregando...</div>;
