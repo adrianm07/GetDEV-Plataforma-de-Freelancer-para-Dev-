@@ -46,10 +46,10 @@ public class PostController {
 //        return ResponseEntity.ok(postService.listarPostsDisponiveis());
 //    }
 
-//    @GetMapping("/{postID}")
-//    public ResponseEntity<PostResponseDTO> buscarPost(@PathVariable UUID postID){
-//        return ResponseEntity.ok(postService.buscarPost(postID));
-//    }
+    @GetMapping("/{postID}")
+   public ResponseEntity<PostResponseDTO> buscarPost(@PathVariable UUID postID){
+        return ResponseEntity.ok(postService.buscarPost(postID));
+    }
 
     @PreAuthorize("hasRole('CONTRATANTE')")
     @PutMapping("/{postID}")

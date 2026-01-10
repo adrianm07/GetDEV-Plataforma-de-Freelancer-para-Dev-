@@ -147,6 +147,9 @@ public class PostService {
                 post.getDataConclusao(),
                 post.getContratante().getId(),
                 post.getContratante().getNome(),
+                post.getContratante().getFotoUrl(),
+                post.getContratante().getEmail(),
+                post.getContratante().getTelefone(),
                 post.getDesenvolvedor()!=null ? post.getDesenvolvedor().getId() : null
         );
 

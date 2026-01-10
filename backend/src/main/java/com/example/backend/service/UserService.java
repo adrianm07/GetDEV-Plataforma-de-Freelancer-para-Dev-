@@ -1,12 +1,15 @@
 package com.example.backend.service;
 
+import com.example.backend.dto.SummaryPostDTO;
 import com.example.backend.dto.UserRegisterRequest;
 import com.example.backend.dto.UserResponseDTO;
 import com.example.backend.dto.UserUpdateRequest;
 import com.example.backend.model.enums.TipoUsuario;
+import com.example.backend.model.post.Post;
 import com.example.backend.model.user.Contratante;
 import com.example.backend.model.user.Desenvolvedor;
 import com.example.backend.model.user.User;
+import com.example.backend.repositories.PostRepository;
 import com.example.backend.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,17 +17,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PostRepository postRepository;
 
-    public UserService (UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService (UserRepository userRepository, PasswordEncoder passwordEncoder,  PostRepository postRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.postRepository = postRepository;
     }
 
     public void register(UserRegisterRequest request) {
@@ -93,6 +101,9 @@ public class UserService {
     public UserResponseDTO getUser(UUID id){
         User user = userRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Usuário nao encontrado"));
 
+        List<SummaryPostDTO> posts = postRepository.findByContratanteId(user.getId()).stream().map(SummaryPostDTO::fromEntity).toList();
+        System.out.println("Titulo do primeiro" + posts.getFirst().titulo());
+
         return new UserResponseDTO(
                 user.getId(),
                 user.getNome(),
@@ -101,7 +112,10 @@ public class UserService {
                 user.getFotoUrl(),
                 user.getDescricao(),
                 user.getTecnologias(),
-                user.getRole()
+                user.getRole(),
+                posts
+
+
         );
 
     }

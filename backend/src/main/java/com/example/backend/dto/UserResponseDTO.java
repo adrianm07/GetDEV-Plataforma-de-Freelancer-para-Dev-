@@ -11,6 +11,7 @@ public record UserResponseDTO(
         String photo,
         String description,
         List<String> skills,
-        String role
+        String role,
+        List<SummaryPostDTO> posts
 ) {
 }
