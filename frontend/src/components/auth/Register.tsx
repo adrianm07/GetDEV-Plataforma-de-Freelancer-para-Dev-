@@ -4,9 +4,10 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Upload, ArrowLeft } from "lucide-react";
+import type { AccountType } from "../../types/accountType";
 
 interface RegisterProps {
-  accountType: "developer" | "contractor";
+  accountType: AccountType
   onBackToTypeSelection: () => void;
   onRegisterSuccess: () => void;
 }
@@ -95,7 +96,7 @@ export function Register({
         <div className="bg-black/50 border border-purple-800/50 rounded-2xl p-8">
           <div className="text-center mb-8">
             <h1 className="text-white mb-2">
-              {accountType === "developer"
+              {accountType === "DESENVOLVEDOR"
                 ? "Cadastro de Desenvolvedor"
                 : "Cadastro de Contratante"}
             </h1>
@@ -132,7 +133,7 @@ export function Register({
 
             <div>
               <Label htmlFor="name" className="text-white mb-2 block">
-                Nome Completo *
+                Nome Completo <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="name"
@@ -147,7 +148,7 @@ export function Register({
 
             <div>
               <Label htmlFor="email" className="text-white mb-2 block">
-                Email *
+                Email <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="email"
@@ -163,7 +164,7 @@ export function Register({
 
             <div>
               <Label htmlFor="phone" className="text-white mb-2 block">
-                Telefone *
+                Telefone <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="phone"
@@ -184,7 +185,7 @@ export function Register({
 
             <div>
               <Label htmlFor="password" className="text-white mb-2 block">
-                Senha *
+                Senha <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="password"
@@ -201,7 +202,7 @@ export function Register({
 
             <div>
               <Label htmlFor="confirmPassword" className="text-white mb-2 block">
-                Confirmar Senha *
+                Confirmar Senha <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="confirmPassword"

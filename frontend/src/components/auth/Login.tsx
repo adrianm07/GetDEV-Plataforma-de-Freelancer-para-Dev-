@@ -68,6 +68,7 @@ export function Login({ onSubmit, onCreateAccount }: LoginProps) {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="seu.email@exemplo.com"
+                className="bg-black/50 border-purple-800/50 text-white focus:border-purple-600"
               />
             </div>
 
@@ -83,7 +84,7 @@ export function Login({ onSubmit, onCreateAccount }: LoginProps) {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Digite sua senha"
-                className="mb-10"
+                className="bg-black/50 border-purple-800/50 text-white focus:border-purple-600 mb-10"
               />
             </div>
 
