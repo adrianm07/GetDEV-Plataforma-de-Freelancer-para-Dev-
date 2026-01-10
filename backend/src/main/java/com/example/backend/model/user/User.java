@@ -27,9 +27,11 @@ public abstract class User {
     private String email;
     private String senha;
     private String telefone;
+    private String descricao;
 
     @Column(name = "foto_url")
     private String fotoUrl;
+
 
     private String tecnologias;
 

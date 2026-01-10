@@ -22,6 +22,9 @@ public record PostResponseDTO(
         Date dataConclusao,
         UUID contratanteId,
         String nomeContratante,
+        String fotoContratante,
+        String emailContratante,
+        String telContratante,
         UUID desenvolvedorId
 
 

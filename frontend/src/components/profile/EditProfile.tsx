@@ -43,6 +43,7 @@ export function EditProfile({
     email: userData.email,
     phone: userData.phone,
     photo: userData.photo,
+    description: userData.description??"",
     newPassword: "",
     confirmPassword: "",
   });
@@ -101,7 +102,8 @@ export function EditProfile({
       email: formData.email,
       phone: formData.phone,
       photo: formData.photo,
-      skills: userData.accountType === "developer" ? skills : undefined,
+      description: formData.description,
+      skills: userData.accountType === "DESENVOLVEDOR" ? skills : undefined,
       ...(formData.newPassword && { password: formData.newPassword }),
     };
 
@@ -149,6 +151,7 @@ export function EditProfile({
           <div>
             <Label>Nome completo *</Label>
             <Input
+              className="bg-black/60 text-white placeholder:text-gray-400"
               required
               value={formData.name}
               onChange={(e) =>
@@ -161,6 +164,7 @@ export function EditProfile({
           <div>
             <Label>Email *</Label>
             <Input
+            className="bg-black/60 text-white placeholder:text-gray-400"
               type="email"
               required
               value={formData.email}
@@ -170,13 +174,26 @@ export function EditProfile({
             />
           </div>
 
+          <div>
+            <Label>Descrição</Label>
+            <textarea
+              className="w-full min-h-[120px] rounded-md bg-black/40 border border-purple-900/30 p-3 text-white"
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
+            />
+          </div>
+
+
           {/* Tipo */}
           <div>
             <Label>Tipo de conta</Label>
             <Input
+            className="bg-black/60 text-white placeholder:text-gray-400"
               disabled
               value={
-                userData.accountType === "developer"
+                userData.accountType === "DESENVOLVEDOR"
                   ? "Desenvolvedor"
                   : "Contratante"
               }
@@ -187,6 +204,7 @@ export function EditProfile({
           <div>
             <Label>Telefone *</Label>
             <Input
+            className="bg-black/60 text-white placeholder:text-gray-400"
               required
               value={formData.phone}
               onChange={(e) =>
@@ -203,6 +221,7 @@ export function EditProfile({
           <div>
             <Label>Nova senha</Label>
             <Input
+            className="bg-black/60 text-white placeholder:text-gray-400"
               type="password"
               value={formData.newPassword}
               onChange={(e) =>
@@ -229,7 +248,7 @@ export function EditProfile({
           )}
 
           {/* Skills */}
-          {userData.accountType === "developer" && (
+          {userData.accountType === "DESENVOLVEDOR" && (
             <div>
               <Label>Habilidades</Label>
 
