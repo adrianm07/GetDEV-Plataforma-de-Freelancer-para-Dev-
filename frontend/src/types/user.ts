@@ -14,16 +14,16 @@ export interface UserProfileData {
 }
 
 export interface PublicUser {
-    name: string,
+    nome: string,
     email: string,
-    photo?: string | null
+    fotoUrl?: string | null;
 }
 
 export interface EditableUserProfile {
   name: string;
   email: string;
   phone: string;
-description?: string;
+  description?: string;
   photo: string | null;
   accountType: AccountType;
   skills?: string[];
@@ -38,4 +38,13 @@ export interface UpdateUserProfilePayload {
   description?: string;
   skills?: string[];
   password?: string;
+}
+
+export interface RegisterRequest {
+  nome: string;
+  senha: string;
+  email: string;
+  telefone: string;
+  fotoUrl?: string | null;
+  tipoUsuario: AccountType;
 }

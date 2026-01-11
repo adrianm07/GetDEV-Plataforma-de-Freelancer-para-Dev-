@@ -65,7 +65,7 @@ export function AccountTypeSelector({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <AccountCard
-            type="developer"
+            type="DESENVOLVEDOR"
             title="Desenvolvedor"
             description="Encontre oportunidades de trabalho e projetos freelancer na área de tecnologia"
             icon={<UserCircle className="w-12 h-12 text-purple-400" />}
@@ -78,7 +78,7 @@ export function AccountTypeSelector({
           />
 
           <AccountCard
-            type="contractor"
+            type="CONTRATANTE"
             title="Contratante"
             description="Publique projetos e encontre desenvolvedores qualificados para suas necessidades"
             icon={<Briefcase className="w-12 h-12 text-purple-400" />}

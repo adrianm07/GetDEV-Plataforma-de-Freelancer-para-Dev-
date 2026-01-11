@@ -1,8 +1,5 @@
-import axios from "axios";
-
-const api = axios.create({
-  baseURL: "http://localhost:8080",
-});
+import type { RegisterRequest } from "../types/user";
+import { api } from "./api";
 
 export function setAuthToken(token: string) {
   api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -20,6 +17,11 @@ export async function loginRequest(email: string, password: string) {
 
 export async function getLoggedUser() {
   const response = await api.get("/me");
+  return response.data;
+}
+
+export async function registerUser(user: RegisterRequest){
+  const response = await api.post("/auth/register", user);
   return response.data;
 }
 

@@ -1,7 +1,10 @@
+import type { RegisterFormData } from "../pages/auth/RegisterPage";
+import type { AccountType } from "../types/accountType";
 import type {
   UserProfileData,
   EditableUserProfile,
-  UpdateUserProfilePayload
+  UpdateUserProfilePayload,
+  RegisterRequest
 } from "../types/user";
 
 export function mapUserToEditable(

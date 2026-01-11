@@ -46,12 +46,7 @@ public class UserService {
         user.setEmail(request.email());
         user.setSenha(passwordEncoder.encode(request.senha()));
         user.setTelefone(request.telefone());
-        user.setDescricao(request.descricao());
         user.setFotoUrl(request.fotoUrl());
-        System.out.println("Tecnlogia que chegou:" + request.tecnologias());
-        user.setTecnologias(request.tecnologias());
-
-        //System.out.println("FOto recbida" + request.fotoUrl());
 
         userRepository.save(user);
 

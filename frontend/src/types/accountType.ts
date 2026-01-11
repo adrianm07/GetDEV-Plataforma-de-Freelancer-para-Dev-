@@ -1,1 +1,1 @@
-export type AccountType = "DESENVOLVEDOR" | "CONTRATANTE";
+export type AccountType = "DESENVOLVEDOR" | "CONTRATANTE" | null;
