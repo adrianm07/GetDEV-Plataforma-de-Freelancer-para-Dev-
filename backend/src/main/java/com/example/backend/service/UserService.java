@@ -97,7 +97,6 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Usuário nao encontrado"));
 
         List<SummaryPostDTO> posts = postRepository.findByContratanteId(user.getId()).stream().map(SummaryPostDTO::fromEntity).toList();
-        System.out.println("Titulo do primeiro" + posts.getFirst().titulo());
 
         return new UserResponseDTO(
                 user.getId(),

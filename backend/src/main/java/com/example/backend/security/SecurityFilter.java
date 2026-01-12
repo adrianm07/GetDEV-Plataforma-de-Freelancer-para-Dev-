@@ -33,34 +33,50 @@ public class SecurityFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // 🔑 ESSENCIAL PARA CORS
+        String path = request.getRequestURI();
+        System.out.println("Path: " + path);
+
+        // 🔓 LIBERA ROTAS DE AUTENTICAÇÃO
+        if (path.startsWith("/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // 🔓 LIBERA PREFLIGHT (CORS)
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             filterChain.doFilter(request, response);
             return;
         }
 
         var token = recoverToken(request);
+        System.out.println("Token recebido: " + token);
 
-        if (token != null) {
-            var login = tokenService.validateToken(token);
-
-            if (login != null) {
-                User user = userRepository.findByEmail(login)
-                        .orElseThrow(() -> new RuntimeException("User Not Found"));
-
-                var authorities = List.of(
-                        new SimpleGrantedAuthority("ROLE_" + user.getRole())
-                );
-
-                var authentication = new UsernamePasswordAuthenticationToken(
-                        user,
-                        null,
-                        authorities
-                );
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+        if (token == null) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
         }
+
+        var login = tokenService.validateToken(token);
+        System.out.println("Token validado. Login/email: " + login);
+        if (login == null) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
+        User user = userRepository.findByEmail(login)
+                .orElseThrow(() -> new RuntimeException("User Not Found"));
+
+        var authorities = List.of(
+                new SimpleGrantedAuthority("ROLE_" + user.getRole())
+        );
+
+        var authentication = new UsernamePasswordAuthenticationToken(
+                user.getEmail(),
+                null,
+                authorities
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }
