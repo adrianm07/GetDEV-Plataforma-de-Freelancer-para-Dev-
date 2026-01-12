@@ -68,7 +68,7 @@ export function Login({ onSubmit, onCreateAccount }: LoginProps) {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="seu.email@exemplo.com"
-                className="bg-black/50 border-purple-800/50 text-white focus:border-purple-600"
+                className="border-purple-800/50 focus:border-purple-600"
               />
             </div>
 
@@ -84,7 +84,7 @@ export function Login({ onSubmit, onCreateAccount }: LoginProps) {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Digite sua senha"
-                className="bg-black/50 border-purple-800/50 text-white focus:border-purple-600 mb-10"
+                className="border-purple-800/50 focus:border-purple-600 mb-10"
               />
             </div>
 
@@ -98,7 +98,7 @@ export function Login({ onSubmit, onCreateAccount }: LoginProps) {
               Não tem uma conta?{" "}
               <button
                 onClick={onCreateAccount}
-                className="text-purple-400 hover:text-purple-300 transition"
+                className="text-purple-400 hover:text-purple-300 transition cursor-pointer"
               >
                 Criar conta
               </button>

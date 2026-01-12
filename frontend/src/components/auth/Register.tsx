@@ -5,34 +5,29 @@ import { Label } from "../ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Upload, ArrowLeft } from "lucide-react";
 import type { AccountType } from "../../types/accountType";
+import type { RegisterFormData } from "../../pages/auth/RegisterPage";
+
 
 interface RegisterProps {
   accountType: AccountType
   onBackToTypeSelection: () => void;
-  onRegisterSuccess: () => void;
-}
-
-interface RegisterFormData {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  phone: string;
-  photo: File | null;
+  onRegisterSuccess: (data: RegisterFormData) => void;
+  loading: boolean;
 }
 
 export function Register({
   accountType,
   onBackToTypeSelection,
   onRegisterSuccess,
+  loading,
 }: RegisterProps) {
   const [formData, setFormData] = useState<RegisterFormData>({
     name: "",
     email: "",
-    password: "",
+    senha: "",
     confirmPassword: "",
-    phone: "",
-    photo: null,
+    telefone: "",
+    foto: null,
   });
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -54,8 +49,8 @@ export function Register({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setFormData((prev) => ({ ...prev, photo: file }));
     setPreviewUrl(URL.createObjectURL(file));
+    setFormData((prev) => ({ ...prev, foto: file }));
   }
 
   function formatPhone(value: string) {
@@ -73,13 +68,13 @@ export function Register({
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.senha !== formData.confirmPassword) {
       alert("As senhas não coincidem");
       return;
     }
 
     console.log("Cadastro:", { ...formData, accountType });
-    onRegisterSuccess();
+    onRegisterSuccess(formData);
   }
 
   return (
@@ -122,8 +117,8 @@ export function Register({
 
                 <input
                   type="file"
-                  id="photo"
-                  name="photo"
+                  id="fotoUrl"
+                  name="fotoUrl"
                   accept="image/*"
                   onChange={handlePhotoChange}
                   className="absolute inset-0 opacity-0 cursor-pointer"
@@ -142,7 +137,7 @@ export function Register({
                 onChange={handleChange}
                 required
                 placeholder="Digite seu nome completo"
-                className="bg-black/50 border-purple-800/50 text-white focus:border-purple-600"
+                className="border-purple-800/50  focus:border-purple-600"
               />
             </div>
 
@@ -158,7 +153,7 @@ export function Register({
                 onChange={handleChange}
                 required
                 placeholder="seu.email@exemplo.com"
-                className="bg-black/50 border-purple-800/50 text-white focus:border-purple-600"
+                className="border-purple-800/50 focus:border-purple-600"
               />
             </div>
 
@@ -167,19 +162,19 @@ export function Register({
                 Telefone <span className="text-red-500">*</span>
               </Label>
               <Input
-                id="phone"
-                name="phone"
-                value={formData.phone}
+                id="telefone"
+                name="telefone"
+                value={formData.telefone}
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
-                    phone: formatPhone(e.target.value),
+                    telefone: formatPhone(e.target.value),
                   }))
                 }
                 required
                 maxLength={15}
                 placeholder="(00) 00000-0000"
-                className="bg-black/50 border-purple-800/50 text-white focus:border-purple-600"
+                className="border-purple-800/50 focus:border-purple-600"
               />
             </div>
 
@@ -188,15 +183,15 @@ export function Register({
                 Senha <span className="text-red-500">*</span>
               </Label>
               <Input
-                id="password"
-                name="password"
+                id="senha"
+                name="senha"
                 type="password"
-                value={formData.password}
+                value={formData.senha}
                 onChange={handleChange}
                 required
                 minLength={8}
                 placeholder="Mínimo 8 caracteres"
-                className="bg-black/50 border-purple-800/50 text-white focus:border-purple-600"
+                className="border-purple-800/50 focus:border-purple-600"
               />
             </div>
 
@@ -213,15 +208,16 @@ export function Register({
                 required
                 minLength={8}
                 placeholder="Digite a senha novamente"
-                className="bg-black/50 border-purple-800/50 text-white focus:border-purple-600"
+                className="border-purple-800/50 focus:border-purple-600"
               />
             </div>
 
             <Button
-              type="submit"
+              disabled={loading}
+              type="submit" 
               className="w-full bg-purple-600 hover:bg-purple-700 text-white"
             >
-              Criar Conta
+              {loading ? "Criando Conta" : "Criar Conta"}
             </Button>
           </form>
         </div>

@@ -204,3 +204,9 @@ html {
 .animate-slide-in-right {
   animation: slide-in-right 0.3s ease-out;
 }
+
+input[data-slot="input"]:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--input-background) inset;
+  box-shadow: 0 0 0 1000px var(--input-background) inset;
+  -webkit-text-fill-color: currentColor;
+}
