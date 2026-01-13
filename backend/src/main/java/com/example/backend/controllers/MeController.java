@@ -21,10 +21,10 @@ public class MeController {
 
     @GetMapping
     public UserMeResponse getLoggedUser(Authentication authentication) {
-        String email = authentication.getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
-
+        //String email = authentication.getName();
+        //User user = userRepository.findByEmail(email)
+               // .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+        User user = (User) authentication.getPrincipal();
         return new UserMeResponse(
                 user.getId(),
                 user.getNome(),
