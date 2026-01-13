@@ -3,7 +3,7 @@ import type { UserProfileData, UpdateUserProfilePayload } from "../types/user";
 import { mapUpdateUserToApi } from "../mapper/userMapper";
 
 export async function getUserById(
-  userId: string
+  userId: string | undefined
 ): Promise<UserProfileData> {
   const response = await api.get<UserProfileData>(`/users/${userId}`);
   return response.data;

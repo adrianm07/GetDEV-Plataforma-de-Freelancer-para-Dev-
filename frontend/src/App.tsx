@@ -4,6 +4,7 @@ import PagePost from "./pages/posts/PagePost"
 import { AuthProvider } from "./context/AuthContext";
 import { LoginPage } from "./pages/auth/LoginPage";
 import { RegisterPage } from "./pages/auth/RegisterPage";
+import Home from "./pages/posts/Home"
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
           {/*Rotas Privadas */}
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/posts/:id" element={<PagePost />} />
-          <Route path="/posts" element={<RegisterPage />} />
+          <Route path="/posts" element={<Home />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

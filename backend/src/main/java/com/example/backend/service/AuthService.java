@@ -44,7 +44,13 @@ public class AuthService {
     }
 
     protected Desenvolvedor getDesenvolvedorAutenticado() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = (String) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
         if (!(user instanceof Desenvolvedor desenvolvedor)) {
             throw new ResponseStatusException(

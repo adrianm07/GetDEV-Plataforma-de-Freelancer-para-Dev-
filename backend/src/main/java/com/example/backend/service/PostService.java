@@ -8,6 +8,7 @@ import com.example.backend.model.avaliacao.Avaliacao;
 import com.example.backend.dto.*;
 import com.example.backend.model.avaliacao.Avaliacao;
 import com.example.backend.model.enums.StatusPost;
+import com.example.backend.model.enums.StatusSolicitacao;
 import com.example.backend.model.enums.Tecnologia;
 import com.example.backend.model.post.Post;
 import com.example.backend.model.post.Preco;
@@ -183,12 +184,14 @@ public class PostService {
         }
 
         if (solicitacaoRepository.existsByDesenvolvedorIdAndPostId(desenvolvedorAutenticado.getId(), postID)) {
-            throw new RuntimeException("Já foi enviada solicitação para este post!");
+            throw new ResponseStatusException (HttpStatus.CONFLICT,"Já foi enviada solicitação para este post!");
         }
 
         Solicitacao solicitacao = new Solicitacao();
         solicitacao.setPost(post);
         solicitacao.setDesenvolvedor(desenvolvedorAutenticado);
+        solicitacao.setDataCriacao(new Date());
+        solicitacao.setStatus(StatusSolicitacao.PENDENTE);
 
         solicitacaoRepository.save(solicitacao);
     }
