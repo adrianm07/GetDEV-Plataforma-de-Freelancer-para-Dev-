@@ -3,7 +3,7 @@ import { loginRequest, getLoggedUser, setAuthToken, clearAuthToken } from "../se
 import type { UserProfileData } from "../types/user";
 
 interface AuthContextData {
-  user: UserProfileData | null;
+  userLogado: UserProfileData | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
@@ -12,7 +12,7 @@ interface AuthContextData {
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<UserProfileData | null>(null);
+  const [userLogado, setUser] = useState<UserProfileData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider
       value={{
-        user,
+        userLogado,
         loading,
         login,
         logout,
@@ -67,5 +67,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth deve ser usado dentro de AuthProvider");
+  }
+  return context;
 }

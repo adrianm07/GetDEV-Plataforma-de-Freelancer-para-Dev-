@@ -1,10 +1,10 @@
 import { Bell, LogOut } from "lucide-react";
 import { useState } from "react";
 
-import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
-import { LogoutConfirmation } from "../auth/LogoutConfirmation";
+import { Avatar, AvatarImage, AvatarFallback } from "../components/ui/avatar";
+import { LogoutConfirmation } from "../components/auth/LogoutConfirmation";
 
-export type HeaderView = "contracts" | "profile" | "managePosts";
+export type HeaderView = "posts" | "profile" | "managePosts" | "solicitacoes";
 
 interface HeaderUser {
   name: string;

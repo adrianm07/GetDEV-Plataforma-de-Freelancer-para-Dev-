@@ -21,7 +21,7 @@ export async function getLoggedUser() {
     const response = await api.get("/me");
     return response.data;
   } catch (err) {
-    console.error("Erro ao buscar usuário logado:", err);
+    //console.error("Erro ao buscar usuário logado:", err);
     return null;
   }
 }

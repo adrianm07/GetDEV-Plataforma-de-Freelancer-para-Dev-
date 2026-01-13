@@ -4,22 +4,34 @@ import PagePost from "./pages/posts/PagePost"
 import { AuthProvider } from "./context/AuthContext";
 import { LoginPage } from "./pages/auth/LoginPage";
 import { RegisterPage } from "./pages/auth/RegisterPage";
+import { AppLayout } from "./layout/AppLayout";
+import { NotificationProvider } from "./context/NotificationContext";
 
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* Rotas Publicas */}
-          <Route path="/auth/login" element={<LoginPage />} />
-          <Route path="/auth/register" element={<RegisterPage />} />
-          
-          {/*Rotas Privadas */}
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/posts/:id" element={<PagePost />} />
-          <Route path="/posts" element={<RegisterPage />} />
-        </Routes>
-      </BrowserRouter>
+      
+        <BrowserRouter>
+          <Routes>
+            {/* Rotas Publicas */}
+            <Route path="/auth/login" element={<LoginPage />} />
+            <Route path="/auth/register" element={<RegisterPage />} />
+            
+            {/*Rotas Privadas */}
+            <Route element={  
+                <NotificationProvider>
+                  <AppLayout />
+                </NotificationProvider>
+              }  
+            > 
+              
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/posts/:id" element={<PagePost />} />
+                <Route path="/posts" element={<RegisterPage />} />
+            </Route>
+
+          </Routes>
+        </BrowserRouter>
     </AuthProvider>
   );
 }
