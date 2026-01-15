@@ -6,6 +6,7 @@ import { LoginPage } from "./pages/auth/LoginPage";
 import { RegisterPage } from "./pages/auth/RegisterPage";
 import { AppLayout } from "./layout/AppLayout";
 import { NotificationProvider } from "./context/NotificationContext";
+import { SolicitacoesPage } from "./pages/solicitacoes/SolicitacoesPage";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/posts/:id" element={<PagePost />} />
                 <Route path="/posts" element={<RegisterPage />} />
+                <Route path="/solicitacoes" element={<SolicitacoesPage />} />
             </Route>
 
           </Routes>

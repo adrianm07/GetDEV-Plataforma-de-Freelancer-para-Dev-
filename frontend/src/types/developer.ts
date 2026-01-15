@@ -1,10 +1,11 @@
-import type { Project } from "./project";
+import type { SummaryPost } from "./project";
 
 export interface Developer {
-  name: string;
+  id: string;
+  nome: string;
   email: string;
-  phone: string;
-  photo: string;
+  telefone: string;
+  foto: string;
   skills: string[];
-  projects?: Project[];
+  projects?: SummaryPost[];
 }

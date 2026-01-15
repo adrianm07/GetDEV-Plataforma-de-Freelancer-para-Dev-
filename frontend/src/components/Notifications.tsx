@@ -6,17 +6,18 @@ import { Clock, CheckCircle, XCircle, Mail, Phone } from "lucide-react";
 
 import { Button } from "./ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
-import { DeveloperProfile } from "./profile/Developerprofile";
+import { DeveloperProfile } from "./profile/DeveloperProfile";
 
-import type { Notification , NotificationStatus} from "../types/notification";
-import type { Developer } from "../types/developer";
-import type { Project } from "../types/project";
+import type { NotificationDTO , NotificationStatus} from "../types/notification";
+import type { Developer} from "../types/developer";
+import type { SummaryPost } from "../types/project";
+import type { AccountType } from "../types/accountType";
 
 interface NotificationsProps {
-  notifications: Notification[];
-  accountType: "developer" | "contractor";
-  onUpdateStatus: (id: number, status: NotificationStatus) => void;
-  onProjectClick?: (project: Project) => void;
+  notifications: NotificationDTO[];
+  accountType: AccountType | undefined;
+  onUpdateStatus: (id: string, status: NotificationStatus) => void;
+  onProjectClick?: (project: SummaryPost) => void;
 }
 
 const STATUS_CONFIG: Record<
@@ -27,17 +28,17 @@ const STATUS_CONFIG: Record<
     className: string;
   }
 > = {
-  pending: {
+  PENDENTE: {
     label: "Pendente",
     icon: <Clock className="w-5 h-5 text-yellow-400" />,
     className: "border-yellow-600/50 bg-yellow-900/10",
   },
-  accepted: {
+  ACEITA: {
     label: "Aceito",
     icon: <CheckCircle className="w-5 h-5 text-green-400" />,
     className: "border-green-600/50 bg-green-900/10",
   },
-  rejected: {
+  RECUSADA: {
     label: "Recusado",
     icon: <XCircle className="w-5 h-5 text-red-400" />,
     className: "border-red-600/50 bg-red-900/10",
@@ -45,8 +46,8 @@ const STATUS_CONFIG: Record<
 };
 
 interface NotificationCardProps {
-  notification: Notification;
-  accountType: "developer" | "contractor";
+  notification: NotificationDTO;
+  accountType: AccountType | undefined;
   onUpdateStatus: NotificationsProps["onUpdateStatus"];
   onSelectDeveloper: (developer: Developer) => void;
 }
@@ -67,12 +68,12 @@ function NotificationCard({
         {/* Avatar */}
         <div
           onClick={() =>
-            accountType === "contractor" &&
+            accountType === "CONTRATANTE" &&
             notification.developer &&
             onSelectDeveloper(notification.developer)
           }
           className={
-            accountType === "contractor" && notification.developer
+            accountType === "CONTRATANTE" && notification.developer
               ? "cursor-pointer"
               : undefined
           }
@@ -143,20 +144,20 @@ function NotificationCard({
               Candidatura enviada em {notification.appliedDate}
             </p>
 
-            {accountType === "contractor" &&
-              notification.status === "pending" && (
+            {accountType === "CONTRATANTE" &&
+              notification.status === "PENDENTE" && (
                 <div className="flex gap-3">
                   <Button
                     variant="outline"
                     onClick={() =>
-                      onUpdateStatus(notification.id, "rejected")
+                      onUpdateStatus(notification.id, "RECUSADA")
                     }
                   >
                     Recusar
                   </Button>
                   <Button
                     onClick={() =>
-                      onUpdateStatus(notification.id, "accepted")
+                      onUpdateStatus(notification.id, "ACEITA")
                     }
                   >
                     Aceitar
@@ -174,25 +175,24 @@ export function Notifications({
   notifications,
   accountType,
   onUpdateStatus,
-  onProjectClick,
 }: NotificationsProps) {
   const [selectedDeveloper, setSelectedDeveloper] =
     useState<Developer | null>(null);
 
   const visibleNotifications =
-    accountType === "developer"
-      ? notifications.filter((n) => n.status !== "rejected")
+    accountType === "DESENVOLVEDOR"
+      ? notifications.filter((n) => n.status !== "RECUSADA")
       : notifications;
 
   const pending = visibleNotifications.filter(
-    (n) => n.status === "pending",
+    (n) => n.status === "PENDENTE",
   );
   const answered = visibleNotifications.filter(
-    (n) => n.status !== "pending",
+    (n) => n.status !== "PENDENTE",
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-purple-950/10 to-black">
+    <div className="min-h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900">
       <div className="max-w-7xl mx-auto px-6 py-8">
         <h1 className="text-white mb-8">Notificações</h1>
 
@@ -243,7 +243,6 @@ export function Notifications({
           isOpen
           developer={selectedDeveloper}
           onClose={() => setSelectedDeveloper(null)}
-          onProjectClick={onProjectClick}
         />
       )}
     </div>

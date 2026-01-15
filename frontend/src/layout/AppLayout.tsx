@@ -50,6 +50,7 @@ export function AppLayout() {
               }
             : undefined
         }
+        role={userLogado?.role}
         navItems={[
           { label: "Contratos", view: "posts" },
           { label: "Perfil", view: "profile" },
@@ -63,7 +64,7 @@ export function AppLayout() {
         onLogout={handleLogout}
       />
 
-      <main className="pt-16">
+      <main >
         {/* espaço por causa do header sticky */}
         <Outlet />
       </main>
