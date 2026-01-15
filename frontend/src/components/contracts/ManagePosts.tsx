@@ -5,31 +5,9 @@ import { toast } from "sonner";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { DeletePostConfirmation } from "./DeletePostConfirmation";
 import { RateDeveloper } from "./RateDeveloper";
-import { PostFormPanel} from "./PostFormPanel";
+import { PostFormPanel } from "./PostFormPanel";
 import type { PostFormData } from "./PostFormPanel";
-
-interface Post {
-  id: number;
-  title: string;
-  description: string;
-  fullDescription?: string;
-  technologies: string[];
-  deadline?: string;
-  minPrice: number;
-  maxPrice: number;
-  email: string;
-  phone: string;
-
-  contractorName: string;
-  contractorPhoto: string | null;
-
-  developerName?: string;
-  developerRating?: number;
-  developerReview?: string;
-
-  isCompleted?: boolean;
-  completedDate?: string;
-}
+import type { Post } from "../../types/contract";
 
 interface ManagePostsProps {
   posts: Post[];
@@ -38,13 +16,8 @@ interface ManagePostsProps {
     email: string;
     photo: string | null;
   };
-  onCreatePost: (
-    post: Omit<Post, "id" | "contractorName" | "contractorPhoto">
-  ) => void;
-  onUpdatePost: (
-    id: number,
-    post: Omit<Post, "id" | "contractorName" | "contractorPhoto">
-  ) => void;
+  onCreatePost: (post: PostFormData) => void;
+  onUpdatePost: (id: number, post: PostFormData) => void;
   onDeletePost: (id: number) => void;
   onCompletePost: (
     id: number,
@@ -87,21 +60,6 @@ function validatePostForm(data: PostFormData): string | null {
   return null;
 }
 
-function mapFormToPost(data: PostFormData) {
-  return {
-    title: data.title,
-    description: data.description,
-    fullDescription: data.fullDescription,
-    technologies: data.technologies,
-    deadline: data.deadline,
-    minPrice: Number(data.minPrice),
-    maxPrice: Number(data.maxPrice),
-    email: data.email,
-    phone: data.phone,
-    developerName: data.developerName,
-  };
-}
-
 export function ManagePosts({
   posts,
   userData,
@@ -139,8 +97,8 @@ export function ManagePosts({
       fullDescription: post.fullDescription || "",
       technologies: post.technologies,
       deadline: post.deadline || "",
-      minPrice: post.minPrice.toString(),
-      maxPrice: post.maxPrice.toString(),
+      minPrice: post.minPrice?.toString() ?? "",
+      maxPrice: post.maxPrice?.toString() ?? "",
       email: post.email,
       phone: post.phone,
       developerName: post.developerName || "",
@@ -162,13 +120,11 @@ export function ManagePosts({
       return;
     }
 
-    const payload = mapFormToPost(data);
-
     if (editingId !== null) {
-      onUpdatePost(editingId, payload);
+      onUpdatePost(editingId, data);
       toast.success("Post atualizado com sucesso!");
     } else {
-      onCreatePost(payload);
+      onCreatePost(data);
       toast.success("Post criado com sucesso!");
     }
 
@@ -190,10 +146,16 @@ export function ManagePosts({
     }
 
     onUpdatePost(post.id, {
-      ...post,
+      title: post.title,
+      description: post.description,
+      fullDescription: post.fullDescription || "",
+      technologies: post.technologies,
+      deadline: post.deadline || "",
+      minPrice: post.minPrice?.toString() ?? "",
+      maxPrice: post.maxPrice?.toString() ?? "",
+      email: post.email,
+      phone: post.phone,
       developerName: "",
-      minPrice: post.minPrice,
-      maxPrice: post.maxPrice,
     });
 
     toast.success("Desenvolvedor removido");
@@ -209,11 +171,13 @@ export function ManagePosts({
   const completedCount = posts.filter((p) => p.isCompleted).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-purple-950/10 to-black">
+    <div className="min-h-screen bg-gradient-to-br from-black via-purple-950 to-black">
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="flex justify-between mb-8">
-          <h1 className="text-white">Gerenciar Posts</h1>
+          <h1 className="text-white text-2xl font-semibold">
+            Gerenciar Posts
+          </h1>
           <button
             onClick={openCreatePanel}
             className="flex items-center gap-2 px-6 py-3 bg-purple-600 rounded-lg hover:bg-purple-700 transition"
@@ -279,8 +243,8 @@ export function ManagePosts({
                   </div>
 
                   <div className="text-gray-400 text-sm">
-                    💰 R$ {post.minPrice.toLocaleString()} – R${" "}
-                    {post.maxPrice.toLocaleString()}
+                    💰 R$ {post.minPrice?.toLocaleString()} – R${" "}
+                    {post.maxPrice?.toLocaleString()}
                   </div>
                 </div>
 
@@ -292,6 +256,7 @@ export function ManagePosts({
                     >
                       Concluir
                     </button>
+
                     {post.developerName && (
                       <button
                         onClick={() => handleRemoveDeveloper(post)}
@@ -300,12 +265,14 @@ export function ManagePosts({
                         Remover Dev
                       </button>
                     )}
+
                     <button
                       onClick={() => openEditPanel(post)}
                       className="text-blue-400 hover:underline"
                     >
                       Editar
                     </button>
+
                     <button
                       onClick={() => setPostToDelete(post)}
                       className="text-red-400 hover:underline"

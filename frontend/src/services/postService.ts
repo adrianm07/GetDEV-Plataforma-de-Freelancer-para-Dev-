@@ -9,3 +9,8 @@ export async function getPosts() {
 export async function enviarSolicitacao(postID: string) {
   await api.post(`/posts/${postID}/solicitacoes`);
 }
+
+export async function listarPostsContratante() {
+  const response = await api.get<SummaryPostDTO[]>("/posts/me");
+  return response.data
+}

@@ -1,5 +1,5 @@
 
-import type { PostResponseDTO, Contract, SummaryPostDTO, ContractSummary } from "../types/contract";
+import type { PostResponseDTO, Contract, SummaryPostDTO, ContractSummary, Post } from "../types/contract";
 
 export function postToContract(post: PostResponseDTO): Contract {
   return {
@@ -34,7 +34,41 @@ export function mapSummary(post : SummaryPostDTO) : ContractSummary{
       .split(",")
       .map(t => t.trim()),
   };
+
 }
+export function mapPostResponseToPost(dto: PostResponseDTO): Post {
+  return {
+    id: Number(dto.id), // ⚠️ backend manda string (UUID)
+    title: dto.titulo,
+    description: dto.resumo,
+    fullDescription: dto.descricao,
+
+    technologies: dto.tecnologias
+      ? dto.tecnologias.split(",").map(t => t.trim())
+      : [],
+
+    deadline: dto.prazo,
+
+    minPrice: dto.precoMin,
+    maxPrice: dto.precoMax,
+
+    email: dto.emailContratante,
+    phone: dto.telContratante,
+
+    contractorName: dto.nomeContratante,
+    contractorPhoto: dto.fotoContratante ?? null,
+
+    developerName: dto.developerName,
+    developerRating: dto.developerRating,
+    developerReview: dto.developerReview,
+
+    isCompleted: dto.status === "CONCLUIDO",
+    completedDate: dto.dataConclusao,
+  };
+}
+
+
+
 
   
 

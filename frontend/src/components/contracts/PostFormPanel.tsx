@@ -7,8 +7,8 @@ export interface PostFormData {
   fullDescription: string;
   technologies: string[];
   deadline: string;
-  minPrice: string;
-  maxPrice: string;
+  minPrice: string | undefined;
+  maxPrice: string | undefined;
   email: string;
   phone: string;
   developerName: string;
