@@ -2,6 +2,7 @@
 import type { PostFormData } from "../components/contracts/PostFormPanel";
 import type { PostResponseDTO, Contract, SummaryPostDTO, ContractSummary, Post, createPostDTO } from "../types/contract";
 
+
 export function postToContract(post: PostResponseDTO): Contract {
   return {
     id: post.id,
@@ -35,7 +36,41 @@ export function mapSummary(post : SummaryPostDTO) : ContractSummary{
       .split(",")
       .map(t => t.trim()),
   };
+
 }
+export function mapPostResponseToPost(dto: PostResponseDTO): Post {
+  return {
+    id: (dto.id), // ⚠️ backend manda string (UUID)
+    title: dto.titulo,
+    description: dto.resumo,
+    fullDescription: dto.descricao,
+
+    technologies: dto.tecnologias
+      ? dto.tecnologias.split(",").map(t => t.trim())
+      : [],
+
+    deadline: dto.prazo,
+
+    minPrice: Number(dto.precoMin),
+    maxPrice: Number(dto.precoMax),
+
+    email: dto.emailContratante,
+    phone: dto.telContratante,
+
+    contractorName: dto.nomeContratante,
+    contractorPhoto: dto.fotoContratante ?? null,
+
+    developerName: dto.developerName,
+    developerRating: dto.developerRating,
+    developerReview: dto.developerReview,
+
+    isCompleted: dto.status === "CONCLUIDO",
+    completedDate: dto.dataConclusao,
+  };
+}
+
+
+
 
 export function mapSummaryPostDTOToPost(
   dto: SummaryPostDTO

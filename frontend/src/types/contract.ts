@@ -34,6 +34,9 @@ export interface PostResponseDTO {
   emailContratante:string,
   telContratante:string,
   desenvolvedorId: string | null;
+  developerName?: string;
+  developerRating?: number;
+  developerReview?: string;
 }
 
 export interface SummaryPostDTO{
@@ -48,30 +51,35 @@ export interface SummaryPostDTO{
   nomeContratante: string;
 }
 
-export interface createPostDTO{
-  titulo: string;
-  resumo : string;
-  descricao: string;
-  prazo : string;
-  precoMin : number;
-  precoMax : number;
-  tecnologias : string;
-}
-
 export interface Post {
   id: string;
   title: string;
   description: string;
+  fullDescription?: string;
   technologies: string[];
-  minPrice: number;
-  maxPrice: number;
   deadline?: string;
+  minPrice: number | null;
+  maxPrice: number | null;
+  email: string;
+  phone: string;
 
   contractorName: string;
   contractorPhoto: string | null;
 
-  email: string;
-  phone: string;
-  developerName?:string,
+  developerName?: string;
+  developerRating?: number;
+  developerReview?: string;
+
   isCompleted?: boolean;
+  completedDate?: string | null;
+}
+
+export interface createPostDTO{
+    titulo: string,
+    resumo: string
+    descricao: string
+    prazo: string,
+    precoMin: number | 0,
+    precoMax: number | 0,
+    tecnologias: string
 }
