@@ -2,34 +2,14 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import type { Post } from "../../types/contract";
+
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { DeletePostConfirmation } from "./DeletePostConfirmation";
 import { RateDeveloper } from "./RateDeveloper";
 import { PostFormPanel} from "./PostFormPanel";
 import type { PostFormData } from "./PostFormPanel";
 
-interface Post {
-  id: number;
-  title: string;
-  description: string;
-  fullDescription?: string;
-  technologies: string[];
-  deadline?: string;
-  minPrice: number;
-  maxPrice: number;
-  email: string;
-  phone: string;
-
-  contractorName: string;
-  contractorPhoto: string | null;
-
-  developerName?: string;
-  developerRating?: number;
-  developerReview?: string;
-
-  isCompleted?: boolean;
-  completedDate?: string;
-}
 
 interface ManagePostsProps {
   posts: Post[];
@@ -38,20 +18,16 @@ interface ManagePostsProps {
     email: string;
     photo: string | null;
   };
-  onCreatePost: (
-    post: Omit<Post, "id" | "contractorName" | "contractorPhoto">
-  ) => void;
-  onUpdatePost: (
-    id: number,
-    post: Omit<Post, "id" | "contractorName" | "contractorPhoto">
-  ) => void;
-  onDeletePost: (id: number) => void;
+
+  onCreatePost: (data: PostFormData) => Promise<void>;
+  onUpdatePost: (id: string, data: PostFormData) => Promise<void>;
+  onDeletePost: (id: string) => Promise<void>;
   onCompletePost: (
-    id: number,
+    id: string,
     developerName: string,
     rating: number,
     review: string
-  ) => void;
+  ) => Promise<void>;
 }
 
 const EMPTY_FORM = (email: string): PostFormData => ({
@@ -111,7 +87,7 @@ export function ManagePosts({
   onCompletePost,
 }: ManagePostsProps) {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
 
   const [formData, setFormData] = useState<PostFormData>(
@@ -136,7 +112,7 @@ export function ManagePosts({
     setFormData({
       title: post.title,
       description: post.description,
-      fullDescription: post.fullDescription || "",
+      fullDescription: post.description || "",
       technologies: post.technologies,
       deadline: post.deadline || "",
       minPrice: post.minPrice.toString(),
@@ -162,13 +138,12 @@ export function ManagePosts({
       return;
     }
 
-    const payload = mapFormToPost(data);
 
     if (editingId !== null) {
-      onUpdatePost(editingId, payload);
+      onUpdatePost(editingId, data);
       toast.success("Post atualizado com sucesso!");
     } else {
-      onCreatePost(payload);
+      onCreatePost(data);
       toast.success("Post criado com sucesso!");
     }
 
@@ -192,8 +167,8 @@ export function ManagePosts({
     onUpdatePost(post.id, {
       ...post,
       developerName: "",
-      minPrice: post.minPrice,
-      maxPrice: post.maxPrice,
+      minPrice: String(post.minPrice),
+      maxPrice: post.maxPrice),
     });
 
     toast.success("Desenvolvedor removido");

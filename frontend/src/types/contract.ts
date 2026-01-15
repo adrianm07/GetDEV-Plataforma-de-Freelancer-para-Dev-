@@ -47,3 +47,31 @@ export interface SummaryPostDTO{
   status: string;
   nomeContratante: string;
 }
+
+export interface createPostDTO{
+  titulo: string;
+  resumo : string;
+  descricao: string;
+  prazo : string;
+  precoMin : number;
+  precoMax : number;
+  tecnologias : string;
+}
+
+export interface Post {
+  id: string;
+  title: string;
+  description: string;
+  technologies: string[];
+  minPrice: number;
+  maxPrice: number;
+  deadline?: string;
+
+  contractorName: string;
+  contractorPhoto: string | null;
+
+  email: string;
+  phone: string;
+  developerName?:string,
+  isCompleted?: boolean;
+}
