@@ -8,11 +8,12 @@ import {
   MessageCircle,
   CheckCircle,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
 import type { Contract as ContractDetailsType } from "../../types/contract";
+import { useApplyPost } from "../../hooks/useApplyPost";
 
 interface ContractDetailsProps {
   contract: ContractDetailsType;
@@ -40,12 +41,18 @@ function InfoCard({ icon, title, value }: InfoCardProps) {
   );
 }
 
+
+
 export function ContractDetails({
   contract,
   onBack,
   accountType = "developer",
 }: ContractDetailsProps) {
 
+  
+
+  const { apply, loading, applied } = useApplyPost();
+  const isApplied = applied;
   const deadline = contract.deadline ?? "Não informado";
   const priceRange = contract.priceRange ?? "A combinar";
   const fullDescription =
@@ -54,7 +61,7 @@ export function ContractDetails({
   const phone = contract.phone ?? "5511999999999";
 const contractorPhoto =
   contract.contractorPhoto ?? undefined;
-
+  <Toaster/>
   function handleEmail() {
     window.location.href = `mailto:${email}?subject=Interesse no projeto: ${contract.title}`;
   }
@@ -75,6 +82,7 @@ const contractorPhoto =
 
   /* ---------- render ---------- */
   return (
+    
     <div className="min-h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900"> 
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Back */}
@@ -190,13 +198,22 @@ const contractorPhoto =
               </Button>
 
               {accountType !== "contractor" && (
-                <Button
-                  className="gap-2 bg-purple-600 hover:bg-purple-700"
-                  onClick={handleApply}
-                >
-                  <CheckCircle className="size-5" />
-                  Assumir Vaga
-                </Button>
+              <Button
+              onClick={() => apply(contract.id)}
+              disabled={loading || isApplied}
+              className={`gap-2 transition-colors ${
+                isApplied
+                  ? "bg-green-600 hover:bg-green-600 cursor-default"
+                  : "bg-purple-600 hover:bg-purple-700"
+              }`}
+            >
+              <CheckCircle className="size-5" />
+              {isApplied
+                ? "Solicitação enviada ✔"
+                : loading
+                ? "Enviando..."
+                : "Assumir Vaga"}
+            </Button>
               )}
             </div>
           </div>

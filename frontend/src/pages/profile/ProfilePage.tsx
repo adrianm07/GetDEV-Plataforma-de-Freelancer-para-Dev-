@@ -10,40 +10,42 @@ import {
   updateUserProfile,
 } from "../../services/userService";
 
-import{mapUserToEditable} from "../../mapper/userMapper"
+import { getLoggedUser } from "../../services/auth.service";
 
-// ID de quem to buscando
-const FIXED_USER_ID = "09bb654c-62c9-47f3-be2b-1fc61ad2463e";
+import{mapUserToEditable} from "../../mapper/userMapper"
+import { useAuth } from "../../context/AuthContext";
+
+
 
 export default function ProfilePage() {
   const [user, setUser] = useState<UserProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
-
-
-  //ID do cara logado
-  const loggedUserId = "09bb654c-62c9-47f3-be2b-1fc61ad2463e";
+  const {userLogado} = useAuth();
 
   async function loadUser() {
     try {
       setLoading(true);
-      const data = await getUserById(FIXED_USER_ID);
-      setUser(data);
-    } catch {
-      setError("Não foi possível carregar o perfil");
+
+      console.log("AAAAAAAAAAAAAAAA");
+      console.log(userLogado?.id);
+      const user = await getUserById(userLogado?.id);
+      setUser(user);
+      
+    } catch (err: any) {
+      if (err.response?.status === 401) {
+        setError("Sessão expirada");
+      }
     } finally {
       setLoading(false);
     }
   }
 
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  const handleEditProfile = () => {
-    setIsEditOpen(true);
-  };
+ useEffect(() => {
+  if (!userLogado?.id) return;
+  loadUser();
+}, [userLogado]);
 
   const handleSaveProfile = async (
     payload: UpdateUserProfilePayload
@@ -52,15 +54,11 @@ export default function ProfilePage() {
 
     try {
       await updateUserProfile(user.id, payload);
-
       await loadUser();
+      setIsEditOpen(false);
     } catch {
       alert("Erro ao atualizar perfil");
     }
-  };
-
-  const handleProjectClick = (summary: SummaryPost) => {
-    console.log("Projeto clicado:", summary);
   };
 
   if (loading) return <div>Carregando...</div>;
@@ -71,17 +69,17 @@ export default function ProfilePage() {
     <>
       <UserProfile
         user={user}
-        canEdit={user.id === loggedUserId}
-        onEditProfile={handleEditProfile}
-        onProjectClick={handleProjectClick}
+        canEdit
+        onEditProfile={() => setIsEditOpen(true)}
       />
 
       <EditProfile
-      isOpen={isEditOpen}
-    onClose={() => setIsEditOpen(false)}
-    userData={mapUserToEditable(user)}
-    onSave={handleSaveProfile}
-/>
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        userData={mapUserToEditable(user)}
+        onSave={handleSaveProfile}
+      />
     </>
   );
 }
+
