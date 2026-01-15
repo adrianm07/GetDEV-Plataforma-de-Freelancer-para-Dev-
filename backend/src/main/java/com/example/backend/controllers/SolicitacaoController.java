@@ -31,8 +31,8 @@ public class SolicitacaoController {
     }
 
     @GetMapping("/enviadas")
-    public ResponseEntity<List<SolicitacaoResponseDTO>>listByDev(){
-        return ResponseEntity.ok(solicitacaoService.listSolicitacoesDev());
+    public ResponseEntity<List<SolicitacaoResponseDTO>>listSolicitacoesUsuario() {
+        return ResponseEntity.ok(solicitacaoService.listSolicitacoesUsuarioLogado());
     }
 
     @GetMapping("/pending-count")
