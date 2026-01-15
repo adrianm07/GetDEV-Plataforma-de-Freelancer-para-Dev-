@@ -11,6 +11,7 @@ import com.example.backend.model.user.Desenvolvedor;
 import com.example.backend.model.user.User;
 import com.example.backend.repositories.SolicitacaoRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,12 +28,9 @@ public class SolicitacaoService {
         this.solicitacaoRepository = solicitacaoRepository;
     }
 
-    public List<SolicitacaoResponseDTO> listSolicitacoesUsuarioLogado() {
+    public List<SolicitacaoResponseDTO> listSolicitacoesUsuarioLogado(Authentication authentication) {
 
-        User user = (User) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
+        User user = (User) authentication.getPrincipal();
 
         List<Solicitacao> solicitacoes;
 

@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -102,8 +103,8 @@ public class PostController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<List<SummaryPostDTO>> listarMe(){
-        List<SummaryPostDTO> meusPosts = postService.listarMeusPosts();
+    public ResponseEntity<List<SummaryPostDTO>> listarMe(Authentication authentication){
+        List<SummaryPostDTO> meusPosts = postService.listarMeusPosts(authentication);
         return ResponseEntity.ok(meusPosts);
     }
 
