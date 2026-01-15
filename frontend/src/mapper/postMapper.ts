@@ -1,5 +1,5 @@
 
-import type { PostResponseDTO, Contract } from "../types/contract";
+import type { PostResponseDTO, Contract, SummaryPostDTO, ContractSummary } from "../types/contract";
 
 export function postToContract(post: PostResponseDTO): Contract {
   return {
@@ -22,3 +22,19 @@ export function postToContract(post: PostResponseDTO): Contract {
     status: post.status,
   };
 }
+
+export function mapSummary(post : SummaryPostDTO) : ContractSummary{
+  return {
+    id : post.id,
+    title : post.titulo,
+    description : post.resumo,
+    contractorName : post.nomeContratante,
+    contractorPhoto : null,
+    technologies: post.tecnologias
+      .split(",")
+      .map(t => t.trim()),
+  };
+}
+
+  
+

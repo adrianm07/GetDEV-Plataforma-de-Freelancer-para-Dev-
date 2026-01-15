@@ -255,9 +255,9 @@ export function EditProfile({
               <div className="flex gap-2 mt-2">
                 <Select value={selectedSkill} onValueChange={setSelectedSkill}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecionar habilidade" />
+                    <SelectValue className = "text-black" placeholder="Selecionar habilidade" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent >
                     {availableSkills.map((skill) => (
                       <SelectItem key={skill} value={skill}>
                         {skill}

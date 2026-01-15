@@ -35,3 +35,15 @@ export interface PostResponseDTO {
   telContratante:string,
   desenvolvedorId: string | null;
 }
+
+export interface SummaryPostDTO{
+  id: string;
+  titulo: string;
+  resumo: string;
+  precoMin: number;
+  precoMax: number;
+  tecnologias: string;
+  prazo: string;
+  status: string;
+  nomeContratante: string;
+}

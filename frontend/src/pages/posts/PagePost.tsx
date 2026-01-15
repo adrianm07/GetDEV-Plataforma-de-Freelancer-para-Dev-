@@ -62,7 +62,7 @@ export default function PagePost() {
   return (
     <ContractDetails
       contract={contract}
-      onBack={() => navigate("/contracts")}
+      onBack={() => navigate("/posts")}
       accountType="developer"
     />
   );

@@ -8,6 +8,7 @@ import com.example.backend.model.avaliacao.Avaliacao;
 import com.example.backend.dto.*;
 import com.example.backend.model.avaliacao.Avaliacao;
 import com.example.backend.model.enums.StatusPost;
+import com.example.backend.model.enums.StatusSolicitacao;
 import com.example.backend.model.enums.Tecnologia;
 import com.example.backend.model.post.Post;
 import com.example.backend.model.post.Preco;
@@ -17,6 +18,7 @@ import com.example.backend.model.user.Desenvolvedor;
 import com.example.backend.model.user.User;
 import com.example.backend.repositories.PostRepository;
 import com.example.backend.repositories.SolicitacaoRepository;
+import com.example.backend.repositories.UserRepository;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,11 +33,13 @@ public class PostService {
     private final PostRepository postRepository;
     private final SolicitacaoRepository solicitacaoRepository;
     private final AuthService authService;
+    private final UserRepository userRepository;
 
-    public PostService(PostRepository postRepository, SolicitacaoRepository solicitacaoRepository, AuthService authService) {
+    public PostService(PostRepository postRepository, SolicitacaoRepository solicitacaoRepository, AuthService authService, UserRepository userRepository) {
         this.postRepository = postRepository;
         this.solicitacaoRepository = solicitacaoRepository;
         this.authService = authService;
+        this.userRepository = userRepository;
     }
 
     private Contratante getContratanteAutenticado() {
@@ -183,12 +187,14 @@ public class PostService {
         }
 
         if (solicitacaoRepository.existsByDesenvolvedorIdAndPostId(desenvolvedorAutenticado.getId(), postID)) {
-            throw new RuntimeException("Já foi enviada solicitação para este post!");
+            throw new ResponseStatusException (HttpStatus.CONFLICT,"Já foi enviada solicitação para este post!");
         }
 
         Solicitacao solicitacao = new Solicitacao();
         solicitacao.setPost(post);
         solicitacao.setDesenvolvedor(desenvolvedorAutenticado);
+        solicitacao.setDataCriacao(new Date());
+        solicitacao.setStatus(StatusSolicitacao.PENDENTE);
 
         solicitacaoRepository.save(solicitacao);
     }
@@ -234,6 +240,20 @@ public class PostService {
 
         }
 
+        return posts.stream().map(SummaryPostDTO::fromEntity).toList();
+    }
+
+    public List<SummaryPostDTO> listarMeusPosts(){
+        List<Post> posts;
+        String email = (String) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        posts = postRepository.findByContratanteId(user.getId());
         return posts.stream().map(SummaryPostDTO::fromEntity).toList();
     }
 

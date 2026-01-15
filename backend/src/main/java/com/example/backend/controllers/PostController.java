@@ -101,6 +101,12 @@ public class PostController {
         return ResponseEntity.ok(posts);
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<List<SummaryPostDTO>> listarMe(){
+        List<SummaryPostDTO> meusPosts = postService.listarMeusPosts();
+        return ResponseEntity.ok(meusPosts);
+    }
+
 
 
     @PreAuthorize("hasRole('CONTRATANTE')")

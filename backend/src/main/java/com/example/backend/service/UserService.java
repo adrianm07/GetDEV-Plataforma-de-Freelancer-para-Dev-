@@ -54,7 +54,13 @@ public class UserService {
 
     public void update(UUID id, UserUpdateRequest request) {
 
-        User usuarioLogado = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = (String) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        User usuarioLogado = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
         if(!usuarioLogado.getId().equals(id)){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sem permissão para editar esse usuário");

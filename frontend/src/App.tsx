@@ -7,28 +7,29 @@ import { RegisterPage } from "./pages/auth/RegisterPage";
 import { AppLayout } from "./layout/AppLayout";
 import { NotificationProvider } from "./context/NotificationContext";
 import { SolicitacoesPage } from "./pages/solicitacoes/SolicitacoesPage";
+import Home from "./pages/posts/Home"
 
 function App() {
   return (
     <AuthProvider>
-      
+
         <BrowserRouter>
           <Routes>
             {/* Rotas Publicas */}
             <Route path="/auth/login" element={<LoginPage />} />
             <Route path="/auth/register" element={<RegisterPage />} />
-            
+
             {/*Rotas Privadas */}
-            <Route element={  
+            <Route element={
                 <NotificationProvider>
                   <AppLayout />
                 </NotificationProvider>
-              }  
-            > 
-              
+              }
+            >
+
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/posts/:id" element={<PagePost />} />
-                <Route path="/posts" element={<RegisterPage />} />
+                <Route path="/posts" element={<Home />} />
                 <Route path="/solicitacoes" element={<SolicitacoesPage />} />
             </Route>
 
