@@ -9,8 +9,6 @@ export interface PostFormData {
   deadline: string;
   minPrice: string | undefined;
   maxPrice: string | undefined;
-  email: string;
-  phone: string;
   developerName: string;
 }
 
@@ -36,8 +34,6 @@ const DEFAULT_FORM_DATA: PostFormData = {
   deadline: "",
   minPrice: "",
   maxPrice: "",
-  email: "",
-  phone: "",
   developerName: "",
 };
 
@@ -55,8 +51,17 @@ export function PostFormPanel({
     if (!isOpen) return;
 
     if (initialData) {
-      setFormData(initialData);
-    } else {
+    setFormData({
+      title: initialData.title ?? "",
+      description: initialData.description ?? "",
+      fullDescription: initialData.fullDescription ?? "",
+      technologies: initialData.technologies ?? [],
+      deadline: initialData.deadline ?? "",
+      minPrice: initialData.minPrice ?? "",
+      maxPrice: initialData.maxPrice ?? "",
+      developerName: initialData.developerName ?? "",
+    }); 
+  }else {
       setFormData(DEFAULT_FORM_DATA);
     }
   }, [isOpen, initialData]);
@@ -116,7 +121,7 @@ export function PostFormPanel({
           {/* Title */}
           <Input
             label="Título do Projeto"
-            required
+            required = {!isEditing}
             value={formData.title}
             onChange={(e) => handleChange("title", e.target.value)}
             placeholder="Ex: Desenvolvimento de E-commerce"
@@ -125,7 +130,7 @@ export function PostFormPanel({
           {/* Short Description */}
           <Textarea
             label="Descrição Breve"
-            required
+            required = {!isEditing}
             rows={3}
             value={formData.description}
             onChange={(e) => handleChange("description", e.target.value)}
@@ -134,6 +139,7 @@ export function PostFormPanel({
           {/* Full Description */}
           <Textarea
             label="Descrição Completa"
+            required = {!isEditing}
             rows={6}
             value={formData.fullDescription}
             onChange={(e) => handleChange("fullDescription", e.target.value)}
@@ -179,14 +185,14 @@ export function PostFormPanel({
           <div className="grid grid-cols-2 gap-4">
             <Input
               label="Preço Mínimo (R$)"
-              required
+              required = {!isEditing}
               type="number"
               value={formData.minPrice}
               onChange={(e) => handleChange("minPrice", e.target.value)}
             />
             <Input
               label="Preço Máximo (R$)"
-              required
+              required = {!isEditing}
               type="number"
               value={formData.maxPrice}
               onChange={(e) => handleChange("maxPrice", e.target.value)}
@@ -195,19 +201,6 @@ export function PostFormPanel({
 
           {/* Contact */}
           <div className="grid md:grid-cols-2 gap-4">
-            <Input
-              label="E-mail"
-              type="email"
-              required
-              value={formData.email}
-              onChange={(e) => handleChange("email", e.target.value)}
-            />
-            <Input
-              label="Telefone / WhatsApp"
-              required
-              value={formData.phone}
-              onChange={(e) => handleChange("phone", e.target.value)}
-            />
           </div>
 
           {/* Developer */}

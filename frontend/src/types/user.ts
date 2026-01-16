@@ -48,3 +48,17 @@ export interface RegisterRequest {
   fotoUrl?: string | null;
   tipoUsuario: AccountType;
 }
+
+export interface UserResponseMe {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  avatar: string | null;
+}
+
+export interface userData {
+    name: string;
+    email: string;
+    photo: string | null;
+  };

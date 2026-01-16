@@ -4,8 +4,9 @@ import { toast } from "sonner";
 import { ManagePosts } from "../../components/contracts/ManagePosts";
 import type { Post } from "../../types/contract";
 import type { PostFormData } from "../../components/contracts/PostFormPanel";
-import { listarPostsContratante } from "../../services/postService";
-import { mapPostResponseToPost } from "../../mapper/postMapper";
+import { completePost, createPost, deletePost, enviarAvaliacao, enviarSolicitacao, listarPostsContratante, updatePost } from "../../services/postService";
+import { mapFormToCreatePostDTO, mapFormToPostUpdate, mapFormToUpdatePostDTO, mapPostResponseToPost } from "../../mapper/postMapper";
+import { getLoggedUser } from "../../services/auth.service";
 
 
 
@@ -13,11 +14,7 @@ export function MyPostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const userData = {
-    name: "Usuário",
-    email: "user@email.com",
-    photo: null,
-  };
+  const userData = getLoggedUser();
 
   async function loadPosts() {
      setLoading(true);
@@ -37,29 +34,76 @@ export function MyPostsPage() {
     loadPosts();
   }, []);
 
-  function handleCreatePost(data: PostFormData) {
-    // chamar backend
-    // atualizar estado
+  async function handleCreatePost(data: PostFormData) {
+      try{
+        const mapped = mapFormToCreatePostDTO(data);
+        await createPost(mapped);
+        await loadPosts();
+        toast.success("Post criado com sucesso!");
+      }
+      catch(error){
+        console.error("Erro ao criar post");
+      }
   }
 
-  function handleUpdatePost(id: number, data: PostFormData) {
-    // chamar backend
-    // atualizar estado
-  }
+ async function handleUpdatePost(id: string, data: PostFormData) {
+  try {
+    await updatePost(id, mapFormToUpdatePostDTO(data));
 
-  function handleDeletePost(id: number) {
-    // chamar backend
-    // remover do estado
-  }
+    setPosts(prev =>
+  prev.map(post =>
+    post.id === id
+      ? mapFormToPostUpdate(data, post)
+      : post
+  )
+);
 
-  function handleCompletePost(
-    id: number,
-    developerName: string,
+    toast.success("Post atualizado com sucesso!");
+  } catch (error) {
+    toast.error("Erro ao atualizar post");
+    console.error(error);
+  }
+}
+  
+
+  async function handleDeletePost(id: string) {
+  try {
+    await deletePost(id)
+
+    setPosts(prevPosts =>
+      prevPosts.filter(post => post.id !== id)
+    )
+  } catch (error) {
+    console.error(error)
+    alert('Erro ao deletar post')
+  }
+}
+
+async  function handleCompletePost(
+    postId: string,
     rating: number,
-    review: string
+    review :string
   ) {
-    // chamar backend
-    // marcar como concluído
+    try{
+      await enviarAvaliacao(postId, rating, review);
+      await completePost(postId)
+
+      toast.success("Projeto concluido e avaliado com sucesso!");
+
+      setPosts(prev =>
+      prev.map(post =>
+      post.id === postId
+      ? { ...post, status: "CONCLUIDO", nota: rating }
+      : post
+  )
+);
+
+    }
+    catch(error){
+      toast.error("Erro ao concluir o projeto")
+      console.error(error)
+    }
+  
   }
 
   /* ========================= */

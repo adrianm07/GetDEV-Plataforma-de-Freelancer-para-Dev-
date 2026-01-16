@@ -7,6 +7,7 @@ import { RegisterPage } from "./pages/auth/RegisterPage";
 import { AppLayout } from "./layout/AppLayout";
 import { NotificationProvider } from "./context/NotificationContext";
 import { SolicitacoesPage } from "./pages/solicitacoes/SolicitacoesPage";
+import { MyPostsPage } from "./pages/posts/MeusPostsPage";
 import Home from "./pages/posts/Home"
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
                 <Route path="/posts/:id" element={<PagePost />} />
                 <Route path="/posts" element={<Home />} />
                 <Route path="/solicitacoes" element={<SolicitacoesPage />} />
+                <Route path="/managePosts" element={<MyPostsPage />} />
             </Route>
 
           </Routes>

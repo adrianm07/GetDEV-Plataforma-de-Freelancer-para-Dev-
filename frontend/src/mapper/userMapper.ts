@@ -4,7 +4,9 @@ import type {
   UserProfileData,
   EditableUserProfile,
   UpdateUserProfilePayload,
-  RegisterRequest
+  RegisterRequest,
+  UserResponseMe,
+  userData
 } from "../types/user";
 
 export function mapUserToEditable(
@@ -31,6 +33,16 @@ export function mapUpdateUserToApi(payload: UpdateUserProfilePayload) {
     fotoUrl: payload.photo,
     tecnologias: payload.skills?.join(","), // backend recebe string
     senha: payload.password,
+  };
+}
+
+export function mapUserResponseToUserData(
+  user: UserResponseMe
+): userData {
+  return {
+    name: user.name,
+    email: user.email,
+    photo: user.avatar, // avatar → photo
   };
 }
 

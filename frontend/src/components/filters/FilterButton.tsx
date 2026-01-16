@@ -2,21 +2,9 @@ import { Filter, X } from "lucide-react";
 import { useState } from "react";
 
 const TECHNOLOGIES = [
-  "JavaScript",
-  "TypeScript",
-  "Python",
-  "Java",
-  "React",
-  "Node.js",
-  "Angular",
-  "Vue.js",
-  "PHP",
-  "Ruby",
-  "Go",
-  "C#",
-  "Swift",
-  "Kotlin",
-  "Rust",
+  "React", "Node.js", "TypeScript", "JavaScript", "Python", "Django",
+  "Next.js", "Vue.js", "Angular", "MongoDB", "PostgreSQL", "MySQL",
+  "Docker", "AWS", "Firebase", "GraphQL", "REST API", "TailwindCSS",
 ];
 
 interface FilterButtonProps {

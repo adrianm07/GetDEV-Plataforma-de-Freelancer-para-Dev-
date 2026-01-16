@@ -8,23 +8,19 @@ import { RateDeveloper } from "./RateDeveloper";
 import { PostFormPanel } from "./PostFormPanel";
 import type { PostFormData } from "./PostFormPanel";
 import type { Post } from "../../types/contract";
+import type { userData } from "../../types/user";
 
 interface ManagePostsProps {
   posts: Post[];
-  userData: {
-    name: string;
-    email: string;
-    photo: string | null;
-  };
+  userData: userData
   onCreatePost: (post: PostFormData) => void;
-  onUpdatePost: (id: number, post: PostFormData) => void;
-  onDeletePost: (id: number) => void;
+  onUpdatePost: (id: string, post: PostFormData) => void;
+  onDeletePost: (id: string) => void;
   onCompletePost: (
-    id: number,
-    developerName: string,
+    id: string,
     rating: number,
     review: string
-  ) => void;
+  ) => Promise<void>;
 }
 
 const EMPTY_FORM = (email: string): PostFormData => ({
@@ -35,8 +31,6 @@ const EMPTY_FORM = (email: string): PostFormData => ({
   deadline: "",
   minPrice: "",
   maxPrice: "",
-  email,
-  phone: "",
   developerName: "",
 });
 
@@ -54,8 +48,6 @@ function validatePostForm(data: PostFormData): string | null {
   if (max < min)
     return "Preço máximo deve ser maior ou igual ao mínimo";
 
-  if (!data.email.trim()) return "E-mail é obrigatório";
-  if (!data.phone.trim()) return "Telefone é obrigatório";
 
   return null;
 }
@@ -69,7 +61,7 @@ export function ManagePosts({
   onCompletePost,
 }: ManagePostsProps) {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
 
   const [formData, setFormData] = useState<PostFormData>(
@@ -94,13 +86,11 @@ export function ManagePosts({
     setFormData({
       title: post.title,
       description: post.description,
-      fullDescription: post.fullDescription || "",
+      fullDescription: post.description || "",
       technologies: post.technologies,
       deadline: post.deadline || "",
       minPrice: post.minPrice?.toString() ?? "",
       maxPrice: post.maxPrice?.toString() ?? "",
-      email: post.email,
-      phone: post.phone,
       developerName: post.developerName || "",
     });
 
@@ -153,8 +143,6 @@ export function ManagePosts({
       deadline: post.deadline || "",
       minPrice: post.minPrice?.toString() ?? "",
       maxPrice: post.maxPrice?.toString() ?? "",
-      email: post.email,
-      phone: post.phone,
       developerName: "",
     });
 
@@ -318,7 +306,6 @@ export function ManagePosts({
           onSubmit={(rating, review) => {
             onCompletePost(
               postToRate.id,
-              postToRate.developerName!,
               rating,
               review
             );

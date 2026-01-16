@@ -52,7 +52,7 @@ export interface SummaryPostDTO{
 }
 
 export interface Post {
-  id: number;
+  id: string;
   title: string;
   description: string;
   fullDescription?: string;
@@ -72,4 +72,14 @@ export interface Post {
 
   isCompleted?: boolean;
   completedDate?: string | null;
+}
+
+export interface createPostDTO{
+    titulo: string,
+    resumo: string
+    descricao: string
+    prazo: string,
+    precoMin: number | 0,
+    precoMax: number | 0,
+    tecnologias: string
 }

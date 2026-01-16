@@ -1,5 +1,7 @@
 
-import type { PostResponseDTO, Contract, SummaryPostDTO, ContractSummary, Post } from "../types/contract";
+import type { PostFormData } from "../components/contracts/PostFormPanel";
+import type { PostResponseDTO, Contract, SummaryPostDTO, ContractSummary, Post, createPostDTO } from "../types/contract";
+
 
 export function postToContract(post: PostResponseDTO): Contract {
   return {
@@ -38,7 +40,7 @@ export function mapSummary(post : SummaryPostDTO) : ContractSummary{
 }
 export function mapPostResponseToPost(dto: PostResponseDTO): Post {
   return {
-    id: Number(dto.id), // ⚠️ backend manda string (UUID)
+    id: (dto.id), // ⚠️ backend manda string (UUID)
     title: dto.titulo,
     description: dto.resumo,
     fullDescription: dto.descricao,
@@ -49,8 +51,8 @@ export function mapPostResponseToPost(dto: PostResponseDTO): Post {
 
     deadline: dto.prazo,
 
-    minPrice: dto.precoMin,
-    maxPrice: dto.precoMax,
+    minPrice: Number(dto.precoMin),
+    maxPrice: Number(dto.precoMax),
 
     email: dto.emailContratante,
     phone: dto.telContratante,
@@ -69,6 +71,68 @@ export function mapPostResponseToPost(dto: PostResponseDTO): Post {
 
 
 
+
+export function mapSummaryPostDTOToPost(
+  dto: SummaryPostDTO
+): Post {
+  return {
+    id: (dto.id),
+    title: dto.titulo,
+    description: dto.resumo,
+    technologies: dto.tecnologias
+      .split(",")
+      .map((tech) => tech.trim()),
+    minPrice: dto.precoMin,
+    maxPrice: dto.precoMax,
+    deadline: dto.prazo,
+    contractorName: dto.nomeContratante,
+    contractorPhoto: null, 
+    email: "", 
+    phone: "", 
+    isCompleted: dto.status === "CONCLUIDO",
+  };
+}
+
+export function mapFormToCreatePostDTO(
+  data: PostFormData
+): createPostDTO {
+  return {
+    titulo: data.title,
+    resumo: data.description,
+    descricao: data.fullDescription,
+    prazo: data.deadline,
+    precoMin: data.minPrice ? Number(data.minPrice) : 0,
+    precoMax: data.maxPrice ? Number(data.maxPrice) : 0,
+    tecnologias: data.technologies.join(", "),
+  };
+}
+
+export function mapFormToUpdatePostDTO(data: PostFormData) {
+  return {
+    titulo: data.title || null,
+    resumo: data.description || null,
+    descricao: data.fullDescription || null,
+    prazo: data.deadline || null,
+    precoMin: data.minPrice ?? null,
+    precoMax: data.maxPrice ?? null,
+    tecnologias: data.technologies?.length
+      ? data.technologies.join(",")
+      : null,
+  };
+}
+
+export function mapFormToPostUpdate(data: PostFormData, original: Post): Post {
+  return {
+    ...original,
+    title: data.title,
+    description: data.description,
+    fullDescription: data.fullDescription,
+    technologies: data.technologies,
+    deadline: data.deadline,
+    minPrice: data.minPrice ? Number(data.minPrice) : null,
+    maxPrice: data.maxPrice ? Number(data.maxPrice) : null,
+  };
+}
 
   
 
