@@ -10,10 +10,11 @@ import type { PostFormData } from "./PostFormPanel";
 import type { Post } from "../../types/contract";
 import type { userData } from "../../types/user";
 import { Button } from "../ui/button";
+import { deleteDevAceito } from "../../services/postService";
 
 interface ManagePostsProps {
   posts: Post[];
-  userData: userData
+  userData: userData;
   onCreatePost: (post: PostFormData) => void;
   onUpdatePost: (id: string, post: PostFormData) => void;
   onDeletePost: (id: string) => void;
@@ -49,7 +50,6 @@ function validatePostForm(data: PostFormData): string | null {
   if (max < min)
     return "Preço máximo deve ser maior ou igual ao mínimo";
 
-
   return null;
 }
 
@@ -63,7 +63,8 @@ export function ManagePosts({
 }: ManagePostsProps) {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [filter, setFilter] = useState<"all" | "active" | "completed">("all");
+
+  const [filter, setFilter] = useState<"active" | "completed">("active");
 
   const [formData, setFormData] = useState<PostFormData>(
     EMPTY_FORM(userData.email)
@@ -71,6 +72,13 @@ export function ManagePosts({
 
   const [postToDelete, setPostToDelete] = useState<Post | null>(null);
   const [postToRate, setPostToRate] = useState<Post | null>(null);
+
+  const filteredPosts = posts.filter(post =>
+    filter === "active" ? !post.isCompleted : post.isCompleted
+  );
+
+  const activeCount = posts.filter(p => !p.isCompleted).length;
+  const completedCount = posts.filter(p => p.isCompleted).length;
 
   const openCreatePanel = () => {
     setFormData(EMPTY_FORM(userData.email));
@@ -111,19 +119,11 @@ export function ManagePosts({
       return;
     }
 
-    if (editingId !== null) {
-      onUpdatePost(editingId, data);
-      toast.success("Post atualizado com sucesso!");
-    } else {
-      onCreatePost(data);
-      toast.success("Post criado com sucesso!");
-    }
-
+    editingId ? onUpdatePost(editingId, data) : onCreatePost(data);
     closePanel();
   };
 
   const handleCompleteProject = (post: Post) => {
-    console.log("Developer name on complete:", post.developerName);
     if (!post.developerName) {
       toast.error("Adicione o nome do desenvolvedor antes de concluir");
       return;
@@ -131,39 +131,18 @@ export function ManagePosts({
     setPostToRate(post);
   };
 
-  const handleRemoveDeveloper = (post: Post) => {
-    if (post.isCompleted) {
-      toast.error("Não é possível remover desenvolvedor de projetos concluídos");
-      return;
+  const handleRemoveDeveloper = async (post: Post) => {
+    try {
+      await deleteDevAceito(post.id);
+      toast.success("Desenvolvedor removido");
+    } catch (error: any) {
+      toast.error(error?.response?.data ?? "Erro ao remover desenvolvedor");
     }
-
-    onUpdatePost(post.id, {
-      title: post.title,
-      description: post.description,
-      fullDescription: post.fullDescription || "",
-      technologies: post.technologies,
-      deadline: post.deadline || "",
-      minPrice: post.minPrice?.toString() ?? "",
-      maxPrice: post.maxPrice?.toString() ?? "",
-      developerName: "",
-    });
-
-    toast.success("Desenvolvedor removido");
   };
-
-  const filteredPosts = posts.filter((post) => {
-    if (filter === "active") return !post.isCompleted;
-    if (filter === "completed") return post.isCompleted;
-    return true;
-  });
-
-  const activeCount = posts.filter((p) => !p.isCompleted).length;
-  const completedCount = posts.filter((p) => p.isCompleted).length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-purple-950 to-black">
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Header */}
         <div className="flex justify-between mb-8">
           <h1 className="text-white text-2xl font-semibold">
             Gerenciar Posts
@@ -177,38 +156,37 @@ export function ManagePosts({
           </button>
         </div>
 
-        {/* Filters */}
+        {/* FILTROS */}
         <div className="flex gap-3 mb-6">
-          {[
-            { key: "all", label: `Todos (${posts.length})` },
-            { key: "active", label: `Em andamento (${activeCount})` },
-            { key: "completed", label: `Concluídos (${completedCount})` },
-          ].map(({ key, label }) => (
-            <button
-              key={key}
-              onClick={() => setFilter(key as any)}
-              className={`px-4 py-2 rounded-lg transition ${
-                filter === key
-                  ? "bg-purple-600 text-white"
-                  : "bg-gray-800 text-gray-300 hover:bg-gray-700"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+          <button
+            onClick={() => setFilter("active")}
+            className={`px-4 py-2 rounded-lg ${
+              filter === "active"
+                ? "bg-purple-600 text-white"
+                : "bg-gray-800 text-gray-300"
+            }`}
+          >
+            Em andamento ({activeCount})
+          </button>
+
+          <button
+            onClick={() => setFilter("completed")}
+            className={`px-4 py-2 rounded-lg ${
+              filter === "completed"
+                ? "bg-purple-600 text-white"
+                : "bg-gray-800 text-gray-300"
+            }`}
+          >
+            Concluídos ({completedCount})
+          </button>
         </div>
 
-        {/* Posts */}
+        {/* POSTS */}
         <div className="space-y-4">
-          {filteredPosts.map((post) => (
-            
+          {filteredPosts.map(post => (
             <div
               key={post.id}
-              className={`rounded-xl p-6 border ${
-                post.isCompleted
-                  ? "border-green-900/30 bg-green-900/5"
-                  : "border-purple-900/30 bg-gray-900"
-              }`}
+              className="rounded-xl p-6 border border-purple-900/30 bg-gray-900"
             >
               <div className="flex gap-4">
                 <Avatar className="size-14 border-2 border-purple-600">
@@ -220,55 +198,45 @@ export function ManagePosts({
 
                 <div className="flex-1">
                   <h3 className="text-white mb-1">{post.title}</h3>
-                  <p className="text-gray-400 mb-3">{post.description}</p>
+                  <p className="text-gray-400 mb-2">{post.description}</p>
 
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {post.technologies.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-3 py-1 text-sm bg-purple-900/20 text-purple-300 rounded-full"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="text-gray-400 text-sm">
-                    💰 R$ {post.minPrice?.toLocaleString()} – R${" "}
-                    {post.maxPrice?.toLocaleString()}
-                  </div>
+                  {/* 💰 PREÇOS (AQUI QUE TINHA SUMIDO) */}
+                  <p className="text-sm text-purple-300">
+                    Orçamento: R$
+                    {post.minPrice?.toLocaleString("pt-BR")} – R$
+                    {post.maxPrice?.toLocaleString("pt-BR")}
+                  </p>
                 </div>
 
+                {/* BOTÕES SÓ PARA ATIVOS */}
                 {!post.isCompleted && (
                   <div className="flex flex-col gap-2">
                     <Button
-                      variant={"outline"}
+                      variant="outline"
                       onClick={() => handleCompleteProject(post)}
                     >
                       Concluir
                     </Button>
+
                     {post.developerName && (
                       <Button
-                        variant={"destructive"}
-                        onClick={() => handleRemoveDeveloper(post)}
                         className="bg-orange-400"
+                        onClick={() => handleRemoveDeveloper(post)}
                       >
                         Remover Dev
                       </Button>
                     )}
 
                     <Button
-                      variant={"secondary"}
-                      onClick={() => openEditPanel(post)}
                       className="bg-blue-500"
+                      onClick={() => openEditPanel(post)}
                     >
                       Editar
                     </Button>
 
                     <Button
-                      variant={"destructive"}
+                      variant="destructive"
                       onClick={() => setPostToDelete(post)}
-                      
                     >
                       Excluir
                     </Button>
@@ -280,13 +248,12 @@ export function ManagePosts({
         </div>
       </div>
 
-      {/* Panels */}
       <PostFormPanel
         isOpen={isPanelOpen}
         onClose={closePanel}
         onSubmit={handleFormSubmit}
         initialData={formData}
-        isEditing={editingId !== null}
+        isEditing={!!editingId}
       />
 
       {postToDelete && (
@@ -296,7 +263,6 @@ export function ManagePosts({
           onCancel={() => setPostToDelete(null)}
           onConfirm={() => {
             onDeletePost(postToDelete.id);
-            toast.success("Post excluído com sucesso");
             setPostToDelete(null);
           }}
         />
@@ -309,11 +275,7 @@ export function ManagePosts({
           developerName={postToRate.developerName!}
           onClose={() => setPostToRate(null)}
           onSubmit={(rating, review) => {
-            onCompletePost(
-              postToRate.id,
-              rating,
-              review
-            );
+            onCompletePost(postToRate.id, rating, review);
             toast.success("Projeto concluído");
             setPostToRate(null);
           }}

@@ -5,6 +5,7 @@ import type { NotificationDTO, NotificationStatus } from "../../types/notificati
 import { Notifications } from "../../components/Notifications";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "sonner";
+import type { AccountType } from "../../types/accountType";
 
 export function SolicitacoesPage(){
     const [notifications, setNotifications] = useState<NotificationDTO[]>([]);
@@ -36,9 +37,17 @@ export function SolicitacoesPage(){
             switch(status){
                 case "ACEITA":
                     await aceitarSolicitacao(id);
+                    toast.success("Solicitação aceita com sucesso", {
+                        duration: 1000,
+                        position: "bottom-right"
+                    });
                     break;
                 case "RECUSADA":
                     await recusarSolicitacao(id);
+                    toast.success("Solicitação recusada com sucesso", {
+                        duration: 1000,
+                        position: "bottom-right"
+                    });
                     break;
             }
 
@@ -54,10 +63,11 @@ export function SolicitacoesPage(){
             });
         }
     }
+    const role: AccountType | undefined = userLogado?.role === "CONTRATANTE" ? "CONTRATANTE" : "DESENVOLVEDOR";
     return(
         <Notifications
             notifications={notifications}
-            accountType={userLogado?.role}
+            accountType={role}
             onUpdateStatus={handleUpdateStatus}
         />
         

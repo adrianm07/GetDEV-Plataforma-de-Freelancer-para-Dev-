@@ -42,12 +42,6 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-//    @PreAuthorize("hasRole('CONTRATANTE')")
-//    @GetMapping
-//    public ResponseEntity<List<SummaryPostDTO>>listarPosts(){
-//        return ResponseEntity.ok(postService.listarPostsDisponiveis());
-//    }
-
     @GetMapping("/{postID}")
    public ResponseEntity<PostResponseDTO> buscarPost(@PathVariable UUID postID){
         return ResponseEntity.ok(postService.buscarPost(postID));

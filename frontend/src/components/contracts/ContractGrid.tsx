@@ -4,6 +4,7 @@ import { getPosts } from "../../services/postService";
 import { mapSummary } from "../../mapper/postMapper";
 import type { ContractSummary } from "../../types/contract";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 interface ContractGridProps{
   filters : string[]
@@ -13,9 +14,12 @@ export function ContractGrid({filters} : ContractGridProps) {
   const [contracts, setContracts] = useState<ContractSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { userLogado } = useAuth();
 
   useEffect(() => {
     async function loadPosts() {
+      if(!userLogado) return;
+      
       const data = await getPosts();
       const mapped = data.map(mapSummary);
       setContracts(mapped);
@@ -23,7 +27,7 @@ export function ContractGrid({filters} : ContractGridProps) {
     }
 
     loadPosts();
-  }, []);
+  }, [userLogado]);
 
   const filteredContracts =
   filters.length === 0

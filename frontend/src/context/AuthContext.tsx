@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { loginRequest, getLoggedUser, setAuthToken, clearAuthToken } from "../services/auth.service";
-import type { UserProfileData } from "../types/user";
+import type {  UserResponseMe } from "../types/user";
 
 interface AuthContextData {
-  userLogado: UserProfileData | null;
+  userLogado: UserResponseMe | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
@@ -12,7 +12,7 @@ interface AuthContextData {
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [userLogado, setUser] = useState<UserProfileData | null>(null);
+  const [userLogado, setUser] = useState<UserResponseMe | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

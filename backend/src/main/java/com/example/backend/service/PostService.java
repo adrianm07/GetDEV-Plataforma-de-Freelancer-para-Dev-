@@ -5,15 +5,11 @@ import com.example.backend.dto.AvaliacaoDTO;
 import com.example.backend.dto.PostCreateDTO;
 import com.example.backend.dto.PostUpdateDTO;
 import com.example.backend.dto.SummaryPostDTO;
-import com.example.backend.exceptions.PostNaoDisponivelException;
-import com.example.backend.exceptions.PostNaoEncontradoException;
-import com.example.backend.exceptions.SolicitacaoJaEnviadaException;
+import com.example.backend.exceptions.*;
 import com.example.backend.model.avaliacao.Avaliacao;
 import com.example.backend.dto.*;
-import com.example.backend.model.avaliacao.Avaliacao;
 import com.example.backend.model.enums.StatusPost;
 import com.example.backend.model.enums.StatusSolicitacao;
-import com.example.backend.model.enums.Tecnologia;
 import com.example.backend.model.post.Post;
 import com.example.backend.model.post.Preco;
 import com.example.backend.model.solicitacao.Solicitacao;
@@ -23,11 +19,9 @@ import com.example.backend.model.user.User;
 import com.example.backend.repositories.PostRepository;
 import com.example.backend.repositories.SolicitacaoRepository;
 import com.example.backend.repositories.UserRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 
 import java.util.*;
@@ -56,8 +50,7 @@ public class PostService {
 
 
         if (!(user instanceof Contratante contratante)) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN, "Usuário não autorizado");
+            throw new UnauthorizedUserException("Usuário não autorizado");
         }
         return contratante;
     }
@@ -102,11 +95,11 @@ public class PostService {
         Contratante contratanteLogado = getContratanteAutenticado();
 
 
-        Post post = postRepository.findById(idPost).orElseThrow(()-> new RuntimeException("Post não encontrado"));
+        Post post = postRepository.findById(idPost).orElseThrow(()-> new PostNaoEncontradoException("Post não encontrado"));
 
 
         if(!post.getContratante().getId().equals(contratanteLogado.getId())){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Usario logado diferente do autor do post");
+            throw new UnauthorizedUserException("Usario logado diferente do autor do post");
         }
 
 
@@ -124,7 +117,6 @@ public class PostService {
             post.setPreco(preco);
         }
 
-
         postRepository.save(post);
 
 
@@ -137,11 +129,11 @@ public class PostService {
         Contratante contratanteLogado = getContratanteAutenticado();
 
 
-        Post post = postRepository.findById(idPost).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post não encontrado"));
+        Post post = postRepository.findById(idPost).orElseThrow(()-> new PostNaoEncontradoException("Post não encontrado"));
 
 
         if(!post.getContratante().getId().equals(contratanteLogado.getId())){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Usuario logado diferente do autor do post");
+            throw new UnauthorizedUserException("Usuario logado diferente do autor do post");
         }
 
 
@@ -172,7 +164,7 @@ public class PostService {
 
 
     public PostResponseDTO buscarPost(UUID idPost){
-        Post post = postRepository.findById(idPost).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Post não encontrado"));
+        Post post = postRepository.findById(idPost).orElseThrow(()->new PostNaoEncontradoException("Post não encontrado"));
 
 
         return new PostResponseDTO(
@@ -206,18 +198,17 @@ public class PostService {
 
     public void deleteDevAceito(UUID postID){
 
-
-        Post post = postRepository.findById(postID).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post não encontrado!"));
+        Post post = postRepository.findById(postID).orElseThrow(()-> new PostNaoEncontradoException("Post não encontrado!"));
         Contratante contratanteLogado = getContratanteAutenticado();
 
 
         if(!post.getContratante().getId().equals(contratanteLogado.getId())){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Usuario logado diferente do autor do post!");
+            throw new UnauthorizedUserException("Usuario logado diferente do autor do post!");
         }
 
 
-        if(post.getStatus() == StatusPost.OCUPADO){
-            throw new RuntimeException("Post já concluído, não é possivel excluir o Desenvolvedor!");
+        if(post.getStatus() == StatusPost.CONCLUIDO){
+            throw new PostJaConcluidoException("Post já concluído, não é possivel excluir o Desenvolvedor!");
         }
 
 
@@ -261,11 +252,11 @@ public class PostService {
         User usuarioLogado = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 
-        Post post = postRepository.findById(idPost).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Post nao encontrado"));
+        Post post = postRepository.findById(idPost).orElseThrow(()->new PostNaoEncontradoException("Post nao encontrado"));
 
 
         if(post.getDesenvolvedor()==null){
-            throw new RuntimeException("Post nao possui desenvolvedor aceito");
+            throw new PostNaoPossuiDesenvolvedorAceitoException("Post nao possui desenvolvedor aceito");
         }
 
 
@@ -274,7 +265,7 @@ public class PostService {
 
 
         if(!isContratanteAutor && !isDevResponsavel){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Vocẽ nao tem permissão para concluir o post");
+            throw new UnauthorizedUserException("Vocẽ nao tem permissão para concluir o post");
         }
 
 
@@ -326,20 +317,20 @@ public class PostService {
     public void registraAvaliacao(UUID postID,  AvaliacaoDTO avaliacaoDTO){
 
 
-        Post post = postRepository.findById(postID).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post não encontrado!"));
+        Post post = postRepository.findById(postID).orElseThrow(()-> new PostNaoEncontradoException("Post não encontrado!"));
         Contratante contratanteLogado = getContratanteAutenticado();
 
 
         if(!post.getContratante().getId().equals(contratanteLogado.getId())){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Usuario logado diferente do autor do post!");
+            throw new UnauthorizedUserException("Usuario logado diferente do autor do post!");
         }
 
 
         if(post.getStatus() != StatusPost.OCUPADO){
-            throw new RuntimeException("Post ainda não concluído!");
+            throw new PostNaoConcluidoException("Post ainda não concluído!");
         }
         if(post.getDesenvolvedor() == null){
-            throw new RuntimeException("Não existe Desenvolvedor para avaliar!");
+            throw new PostNaoPossuiDesenvolvedorAceitoException("Não existe Desenvolvedor para avaliar!");
         }
         Avaliacao avaliacao = new Avaliacao();
         avaliacao.setNota(avaliacaoDTO.nota());

@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.dto.SolicitacaoResponseDTO;
 import com.example.backend.exceptions.PostJaPossuiDesenvolvedorException;
 import com.example.backend.exceptions.SolicitacaoJaAceitaException;
+import com.example.backend.exceptions.SolicitacaoNaoEncontradaException;
 import com.example.backend.exceptions.UnauthorizedUserException;
 import com.example.backend.model.enums.StatusPost;
 import com.example.backend.model.enums.StatusSolicitacao;
@@ -55,7 +56,7 @@ public class SolicitacaoService {
 
 
     public void aceitarSolicitacao(UUID solicitacaoID) {
-        Solicitacao solicitacao = solicitacaoRepository.findById(solicitacaoID).orElseThrow(() -> new RuntimeException("Solicitação não encontrada!"));
+        Solicitacao solicitacao = solicitacaoRepository.findById(solicitacaoID).orElseThrow(() -> new SolicitacaoNaoEncontradaException("Solicitação não encontrada!"));
         Post post = solicitacao.getPost();
         Desenvolvedor desenvolvedor = solicitacao.getDesenvolvedor();
 
@@ -74,7 +75,7 @@ public class SolicitacaoService {
     }
 
     public void recusarSolicitacao(UUID solicitacaoID){
-        Solicitacao solicitacao = solicitacaoRepository.findById(solicitacaoID).orElseThrow(() -> new RuntimeException("Solicitação não encontrada!"));
+        Solicitacao solicitacao = solicitacaoRepository.findById(solicitacaoID).orElseThrow(() -> new SolicitacaoNaoEncontradaException("Solicitação não encontrada!"));
 
         if(solicitacao.getStatus() == StatusSolicitacao.ACEITA){
             throw new SolicitacaoJaAceitaException("Solicitação desse projeto já foi aceita!");

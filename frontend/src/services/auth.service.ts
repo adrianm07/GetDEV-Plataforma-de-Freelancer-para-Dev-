@@ -1,4 +1,4 @@
-import type { RegisterRequest } from "../types/user";
+import type { RegisterRequest, UserResponseMe } from "../types/user";
 import { api } from "./api";
 
 export function setAuthToken(token: string) {
@@ -18,7 +18,7 @@ export async function loginRequest(email: string, password: string) {
 
 export async function getLoggedUser() {
   try {
-    const response = await api.get("/me");
+    const response = await api.get<UserResponseMe>("/me");
     return response.data;
   }
   catch (err) {

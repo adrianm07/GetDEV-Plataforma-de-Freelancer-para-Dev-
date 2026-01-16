@@ -59,4 +59,25 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleSolicitacaoJaEnviada(SolicitacaoJaEnviadaException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
+
+    @ExceptionHandler(SolicitacaoNaoEncontradaException.class)
+    public ResponseEntity<String> handleSolicitacaoNaoEncontrada(SolicitacaoNaoEncontradaException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(PostJaConcluidoException.class)
+    public ResponseEntity<String> handlePostJaConcluido(PostJaConcluidoException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(PostNaoPossuiDesenvolvedorAceitoException.class)
+    public ResponseEntity<String> handlePostNaoPossuiDesenvolvedorAceito(PostNaoPossuiDesenvolvedorAceitoException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(PostNaoConcluidoException.class)
+    public ResponseEntity<String> handlePostNaoConcluido(PostNaoConcluidoException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
 }
+

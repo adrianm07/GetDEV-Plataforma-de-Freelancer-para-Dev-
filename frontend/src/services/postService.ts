@@ -35,8 +35,8 @@ export async function completePost(id:string) {
 export async function enviarAvaliacao(postId: string, nota: number, comentario: string) {
   return api.post(`/posts/${postId}/avaliacao`,{
     nota, comentario});
-  
-  
 }
 
-
+export async function deleteDevAceito(postId: string){
+  await api.patch(`/posts/${postId}`);
+}
