@@ -154,7 +154,11 @@ public class PostService {
                 post.getContratante().getFotoUrl(),
                 post.getContratante().getEmail(),
                 post.getContratante().getTelefone(),
-                post.getDesenvolvedor()!=null ? post.getDesenvolvedor().getId() : null
+                post.getDesenvolvedor()!=null ? post.getDesenvolvedor().getId() : null,
+                post.getDesenvolvedor()!=null ? post.getDesenvolvedor().getNome() : null,
+                post.getAvaliacao() != null ? post.getAvaliacao().getNota() : null,
+                post.getAvaliacao() != null ? post.getAvaliacao().getComentario() : null
+
         );
 
     }

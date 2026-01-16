@@ -25,7 +25,10 @@ public record PostResponseDTO(
         String fotoContratante,
         String emailContratante,
         String telContratante,
-        UUID desenvolvedorId
+        UUID desenvolvedorId,
+        String nomeDesenvolvedor,
+        Integer nota,
+        String comentario
 
 
 ) {
