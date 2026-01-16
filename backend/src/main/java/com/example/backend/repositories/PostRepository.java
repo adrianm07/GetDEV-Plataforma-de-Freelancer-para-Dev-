@@ -22,4 +22,6 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
     List<Post> findDisponiveisPorTecnologia(@Param("status")StatusPost status, @Param("tecnologia")String tecnologia);
 
     List<Post> findByContratanteId(UUID contratanteId);
+
+    List<Post> findByDesenvolvedorId(UUID desenvolvedorId);
 }

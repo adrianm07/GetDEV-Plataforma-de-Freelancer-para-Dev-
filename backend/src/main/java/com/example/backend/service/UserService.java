@@ -95,8 +95,12 @@ public class UserService {
 
     public UserResponseDTO getUser(UUID id){
         User user = userRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Usuário nao encontrado"));
-
-        List<SummaryPostDTO> posts = postRepository.findByContratanteId(user.getId()).stream().map(SummaryPostDTO::fromEntity).toList();
+        List<SummaryPostDTO> posts;
+        if(user.getRole()=="CONTRATANTE") {
+            posts = postRepository.findByContratanteId(user.getId()).stream().map(SummaryPostDTO::fromEntity).toList();
+        }else{
+            posts = postRepository.findByDesenvolvedorId(user.getId()).stream().map(SummaryPostDTO::fromEntity).toList();
+        }
 
         return new UserResponseDTO(
                 user.getId(),
