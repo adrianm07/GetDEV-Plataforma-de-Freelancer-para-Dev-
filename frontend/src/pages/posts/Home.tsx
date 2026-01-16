@@ -1,6 +1,11 @@
+import { useState } from "react";
 import { ContractGrid } from "../../components/contracts/ContractGrid";
+import { FilterButton } from "../../components/filters/FilterButton";
 
 export default function ContractsPage() {
+
+  const [filters, setFilters] = useState<string[]>([]);
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-black to-purple-950 px-8 py-10">
       <div className="flex justify-between items-center mb-8">
@@ -8,12 +13,10 @@ export default function ContractsPage() {
           Contratos Disponíveis
         </h1>
 
-        <button className="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-white">
-          Filtrar
-        </button>
+        <FilterButton onFilterChange={setFilters}/>
       </div>
-
-      <ContractGrid />
+      
+      <ContractGrid filters={filters} />
     </main>
   );
 }
