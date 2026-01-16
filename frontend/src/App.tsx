@@ -9,12 +9,12 @@ import { NotificationProvider } from "./context/NotificationContext";
 import { SolicitacoesPage } from "./pages/solicitacoes/SolicitacoesPage";
 import { MyPostsPage } from "./pages/posts/MeusPostsPage";
 import Home from "./pages/posts/Home";
-import { Toaster } from "sonner"; // <-- importando Toaster
+import { Toaster } from "sonner"; 
 
 function App() {
   return (
     <AuthProvider>
-      {/* Adicione o Toaster aqui */}
+      
       <Toaster position="bottom-right" richColors />
 
       <BrowserRouter>

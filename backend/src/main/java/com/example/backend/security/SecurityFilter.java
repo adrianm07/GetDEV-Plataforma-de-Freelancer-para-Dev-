@@ -2,7 +2,6 @@ package com.example.backend.security;
 
 import com.example.backend.model.user.User;
 import com.example.backend.repositories.UserRepository;
-import com.example.backend.security.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -36,13 +36,11 @@ public class SecurityFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         System.out.println("Path: " + path);
 
-        // 🔓 LIBERA ROTAS DE AUTENTICAÇÃO
         if (path.startsWith("/auth")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 🔓 LIBERA PREFLIGHT (CORS)
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             filterChain.doFilter(request, response);
             return;
@@ -52,19 +50,19 @@ public class SecurityFilter extends OncePerRequestFilter {
         System.out.println("Token recebido: " + token);
 
         if (token == null) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         var login = tokenService.validateToken(token);
         System.out.println("Token validado. Login/email: " + login);
         if (login == null) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         User user = userRepository.findByEmail(login)
-                .orElseThrow(() -> new RuntimeException("User Not Found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario nao encontrado!"));
 
         var authorities = List.of(
                 new SimpleGrantedAuthority("ROLE_" + user.getRole())

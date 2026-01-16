@@ -4,8 +4,8 @@ import com.example.backend.dto.SummaryPostDTO;
 import com.example.backend.dto.UserRegisterRequest;
 import com.example.backend.dto.UserResponseDTO;
 import com.example.backend.dto.UserUpdateRequest;
+import com.example.backend.exceptions.EmailJaCadastradoException;
 import com.example.backend.model.enums.TipoUsuario;
-import com.example.backend.model.post.Post;
 import com.example.backend.model.user.Contratante;
 import com.example.backend.model.user.Desenvolvedor;
 import com.example.backend.model.user.User;
@@ -13,15 +13,12 @@ import com.example.backend.repositories.PostRepository;
 import com.example.backend.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -38,7 +35,7 @@ public class UserService {
 
     public void register(UserRegisterRequest request) {
         if(userRepository.existsByEmail(request.email())){
-            throw new RuntimeException("Email ja cadastrado");
+            throw new EmailJaCadastradoException("Email já cadastrado!");
         }
 
         User user = crateUserByTipo(request.tipoUsuario());

@@ -16,7 +16,7 @@ export function LoginPage() {
       });
       navigate("/posts");
     } catch (error: any) {
-      toast.error(error?.response?.data?.message ?? "Email ou senha inválidos", {
+      toast.error(error?.response?.data ?? "Email ou senha invalidos", {
         duration: 3000,
         position: "bottom-right",
       });

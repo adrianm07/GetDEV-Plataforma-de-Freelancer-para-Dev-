@@ -1,17 +1,11 @@
 package com.example.backend.controllers;
 
 import com.example.backend.dto.LoginRequestDTO;
-import com.example.backend.dto.LoginResponseDTO;
 import com.example.backend.dto.UserRegisterRequest;
-import com.example.backend.model.user.User;
-import com.example.backend.repositories.UserRepository;
-import com.example.backend.security.TokenService;
 import com.example.backend.service.AuthService;
 import com.example.backend.service.UserService;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -20,16 +14,11 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
-    private final TokenService tokenService;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final AuthService authService;
 
-    public AuthController(UserService userService, TokenService tokenService, UserRepository userRepository, PasswordEncoder passwordEncoder, AuthService authService) {
+    public AuthController(UserService userService, AuthService authService) {
         this.userService = userService;
-        this.tokenService = tokenService;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+
         this.authService = authService;
     }
 
@@ -40,7 +29,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody LoginRequestDTO request) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
         return ResponseEntity.ok(authService.login(request));
     }
 }
