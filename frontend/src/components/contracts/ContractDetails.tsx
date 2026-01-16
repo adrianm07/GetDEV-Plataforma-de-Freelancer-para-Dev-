@@ -8,17 +8,18 @@ import {
   MessageCircle,
   CheckCircle,
 } from "lucide-react";
-import { toast, Toaster } from "sonner";
+import { Toaster } from "sonner";
 
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { Button } from "../ui/button";
 import type { Contract as ContractDetailsType } from "../../types/contract";
 import { useApplyPost } from "../../hooks/useApplyPost";
+import type { AccountType } from "../../types/accountType";
 
 interface ContractDetailsProps {
   contract: ContractDetailsType;
   onBack: () => void;
-  accountType?: "developer" | "contractor";
+  accountType?: AccountType;
 }
 
 interface InfoCardProps {
@@ -46,7 +47,7 @@ function InfoCard({ icon, title, value }: InfoCardProps) {
 export function ContractDetails({
   contract,
   onBack,
-  accountType = "developer",
+  accountType,
 }: ContractDetailsProps) {
 
   
@@ -71,13 +72,6 @@ const contractorPhoto =
       `Olá! Tenho interesse no projeto: ${contract.title}`
     );
     window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-  }
-
-  function handleApply() {
-    toast.success(
-      "Solicitação enviada com sucesso! O contratante entrará em contato.",
-      { duration: 4000 }
-    );
   }
 
   /* ---------- render ---------- */
@@ -175,13 +169,12 @@ const contractorPhoto =
 
             <div
               className={`grid gap-4 ${
-                accountType === "contractor"
+                accountType === "CONTRATANTE"
                   ? "md:grid-cols-2"
                   : "md:grid-cols-3"
               }`}
             >
               <Button
-                variant="outline"
                 onClick={handleEmail}
                 className="gap-2"
               >
@@ -197,7 +190,7 @@ const contractorPhoto =
                 WhatsApp
               </Button>
 
-              {accountType !== "contractor" && (
+              {accountType === "DESENVOLVEDOR" && (
               <Button
               onClick={() => apply(contract.id)}
               disabled={loading || isApplied}

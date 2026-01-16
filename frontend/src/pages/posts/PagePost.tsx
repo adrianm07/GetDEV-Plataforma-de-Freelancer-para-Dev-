@@ -9,6 +9,8 @@ import type { PostResponseDTO, Contract } from "../../types/contract";
 
 import { postToContract } from "../../mapper/postMapper";
 import { api } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
+import { toast } from "sonner";
 
 export default function PagePost() {
   const { id } = useParams<{ id: string }>();
@@ -17,9 +19,12 @@ export default function PagePost() {
   const [contract, setContract] = useState<Contract | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const { userLogado } = useAuth();
 
   useEffect(() => {
     async function loadPost() {
+      if(!userLogado) return;
+
       try {
         if (!id) return;
 
@@ -28,8 +33,11 @@ export default function PagePost() {
         );
 
         setContract(postToContract(response.data));
-      } catch (err) {
-        console.error("Erro ao carregar post:", err);
+      } catch (error: any) {
+        toast.error(error?.response?.data ?? "Erro ao carregar Posts!", {
+          duration: 2000,
+          position: "bottom-right",
+        });
         setError(true);
       } finally {
         setLoading(false);
@@ -37,7 +45,7 @@ export default function PagePost() {
     }
 
     loadPost();
-  }, [id]);
+  }, [userLogado, id]);
 
   /* ---------- estados ---------- */
 
@@ -63,7 +71,7 @@ export default function PagePost() {
     <ContractDetails
       contract={contract}
       onBack={() => navigate("/posts")}
-      accountType="developer"
+      accountType={userLogado?.role}
     />
   );
 }

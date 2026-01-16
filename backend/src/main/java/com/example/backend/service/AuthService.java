@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.dto.LoginRequestDTO;
 import com.example.backend.dto.LoginResponseDTO;
+import com.example.backend.exceptions.ForbiddenException;
 import com.example.backend.exceptions.InvalidLoginException;
 import com.example.backend.model.user.Desenvolvedor;
 import com.example.backend.model.user.User;
@@ -57,8 +58,7 @@ public class AuthService {
                 .getPrincipal();
 
         if (!(user instanceof Desenvolvedor desenvolvedor)) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN, "Usuário não autorizado");
+            throw new ForbiddenException("Usuário não autorizado!");
         }
         return desenvolvedor;
     }

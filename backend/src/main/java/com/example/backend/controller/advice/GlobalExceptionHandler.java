@@ -44,4 +44,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleForbidden(ForbiddenException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
+
+    @ExceptionHandler(PostNaoDisponivelException.class)
+    public ResponseEntity<String> handlePostNaoDisponivel(PostNaoDisponivelException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(PostNaoEncontradoException.class)
+    public ResponseEntity<String> handlePostNaoEncontrado(PostNaoEncontradoException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(SolicitacaoJaEnviadaException.class)
+    public ResponseEntity<String> handleSolicitacaoJaEnviada(SolicitacaoJaEnviadaException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
 }

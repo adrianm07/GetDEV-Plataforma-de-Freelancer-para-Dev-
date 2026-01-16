@@ -36,7 +36,10 @@ export function useApplyPost() {
         }
       }
 
-      toast.error("Erro ao enviar solicitação.");
+      toast.error(error?.response?.data ?? "Erro ao enviar solicitação.", {
+        duration: 2000,
+        position: "bottom-right"
+      });
     } finally {
       setLoading(false);
     }

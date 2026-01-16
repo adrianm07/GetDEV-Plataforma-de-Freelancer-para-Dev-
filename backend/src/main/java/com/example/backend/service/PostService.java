@@ -5,6 +5,9 @@ import com.example.backend.dto.AvaliacaoDTO;
 import com.example.backend.dto.PostCreateDTO;
 import com.example.backend.dto.PostUpdateDTO;
 import com.example.backend.dto.SummaryPostDTO;
+import com.example.backend.exceptions.PostNaoDisponivelException;
+import com.example.backend.exceptions.PostNaoEncontradoException;
+import com.example.backend.exceptions.SolicitacaoJaEnviadaException;
 import com.example.backend.model.avaliacao.Avaliacao;
 import com.example.backend.dto.*;
 import com.example.backend.model.avaliacao.Avaliacao;
@@ -227,17 +230,17 @@ public class PostService {
     public void registraSolicitacao(UUID postID){
 
 
-        Post post = postRepository.findById(postID).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post não encontrado"));
+        Post post = postRepository.findById(postID).orElseThrow(()-> new PostNaoEncontradoException("Post não encontrado"));
         Desenvolvedor desenvolvedorAutenticado = authService.getDesenvolvedorAutenticado();
 
 
         if (post.getStatus() != StatusPost.DISPONIVEL) {
-            throw new RuntimeException("Post já ocupado ou concluído!");
+            throw new PostNaoDisponivelException("Post já ocupado ou concluído!");
         }
 
 
         if (solicitacaoRepository.existsByDesenvolvedorIdAndPostId(desenvolvedorAutenticado.getId(), postID)) {
-            throw new ResponseStatusException (HttpStatus.CONFLICT,"Já foi enviada solicitação para este post!");
+            throw new SolicitacaoJaEnviadaException("Já foi enviada solicitação para este post!");
         }
 
 
