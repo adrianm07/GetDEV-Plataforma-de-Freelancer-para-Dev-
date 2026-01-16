@@ -107,5 +107,32 @@ export function mapFormToCreatePostDTO(
   };
 }
 
+export function mapFormToUpdatePostDTO(data: PostFormData) {
+  return {
+    titulo: data.title || null,
+    resumo: data.description || null,
+    descricao: data.fullDescription || null,
+    prazo: data.deadline || null,
+    precoMin: data.minPrice ?? null,
+    precoMax: data.maxPrice ?? null,
+    tecnologias: data.technologies?.length
+      ? data.technologies.join(",")
+      : null,
+  };
+}
+
+export function mapFormToPostUpdate(data: PostFormData, original: Post): Post {
+  return {
+    ...original,
+    title: data.title,
+    description: data.description,
+    fullDescription: data.fullDescription,
+    technologies: data.technologies,
+    deadline: data.deadline,
+    minPrice: data.minPrice ? Number(data.minPrice) : null,
+    maxPrice: data.maxPrice ? Number(data.maxPrice) : null,
+  };
+}
+
   
 
