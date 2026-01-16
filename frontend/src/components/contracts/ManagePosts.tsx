@@ -9,6 +9,7 @@ import { PostFormPanel } from "./PostFormPanel";
 import type { PostFormData } from "./PostFormPanel";
 import type { Post } from "../../types/contract";
 import type { userData } from "../../types/user";
+import { Button } from "../ui/button";
 
 interface ManagePostsProps {
   posts: Post[];
@@ -238,35 +239,38 @@ export function ManagePosts({
 
                 {!post.isCompleted && (
                   <div className="flex flex-col gap-2">
-                    <button
+                    <Button
+                      variant={"outline"}
                       onClick={() => handleCompleteProject(post)}
-                      className="text-green-400 hover:underline"
                     >
                       Concluir
-                    </button>
+                    </Button>
 
                     {post.developerName && (
-                      <button
+                      <Button
+                        variant={"destructive"}
                         onClick={() => handleRemoveDeveloper(post)}
-                        className="text-orange-400 hover:underline"
+                        className="bg-orange"
                       >
                         Remover Dev
-                      </button>
+                      </Button>
                     )}
 
-                    <button
+                    <Button
+                      variant={"secondary"}
                       onClick={() => openEditPanel(post)}
-                      className="text-blue-400 hover:underline"
+                      className="bg-blue-500"
                     >
                       Editar
-                    </button>
+                    </Button>
 
-                    <button
+                    <Button
+                      variant={"destructive"}
                       onClick={() => setPostToDelete(post)}
-                      className="text-red-400 hover:underline"
+                      
                     >
                       Excluir
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>

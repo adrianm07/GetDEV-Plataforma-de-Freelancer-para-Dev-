@@ -17,7 +17,8 @@ export function AppLayout() {
   }
 
   function handleNotificationsClick(){
-    navigate("/notifications");
+    navigate("/solicitacoes");
+    setCurrentView("solicitacoes");
   }
 
   function handleViewChange(view: HeaderView){

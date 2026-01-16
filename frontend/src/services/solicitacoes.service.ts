@@ -22,14 +22,14 @@ export async function getPendingNotificationCount(): Promise<number> {
 }
 
 export async function getSolicitacoesUsuarioLogado(){
-  const response = await api.get<SolicitacaoResponseDTO[]>("solicitacoes/enviadas");
+  const response = await api.get<SolicitacaoResponseDTO[]>("/solicitacoes/enviadas");
   return response.data;
 }
 
 export async function aceitarSolicitacao(id:string){
-  return api.put(`/solicitacoes/${id}/aceitar`);
+  return api.put(`/posts/solicitacoes/${id}/aceitar`);
 }
 
 export async function recusarSolicitacao(id:string){
-  return api.put(`/solicitacoes/${id}/recusar`);
+  return api.put(`/posts/solicitacoes/${id}/recusar`);
 }

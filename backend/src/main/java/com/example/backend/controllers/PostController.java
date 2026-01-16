@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/posts")
 public class PostController {
 
@@ -110,15 +111,15 @@ public class PostController {
 
 
 
-    @PreAuthorize("hasRole('CONTRATANTE')")
-    @PutMapping("solicitacoes/{solicitacaoID}/aceitar")
+    @PreAuthorize("hasAuthority('CONTRATANTE')")
+    @PutMapping("/solicitacoes/{solicitacaoID}/aceitar")
     public ResponseEntity<Void> aceitarSolicitacao(@PathVariable UUID solicitacaoID){
         solicitacaoService.aceitarSolicitacao(solicitacaoID);
         return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasRole('CONTRATANTE')")
-    @PutMapping("solicitacoes/{solicitacaoID}/recusar")
+    @PutMapping("/solicitacoes/{solicitacaoID}/recusar")
     public ResponseEntity<Void> recusarSolicitacao(@PathVariable UUID solicitacaoID){
         solicitacaoService.recusarSolicitacao(solicitacaoID);
         return ResponseEntity.ok().build();

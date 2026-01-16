@@ -148,7 +148,7 @@ function NotificationCard({
               notification.status === "PENDENTE" && (
                 <div className="flex gap-3">
                   <Button
-                    variant="outline"
+                    variant="destructive"
                     onClick={() =>
                       onUpdateStatus(notification.id, "RECUSADA")
                     }
@@ -156,6 +156,7 @@ function NotificationCard({
                     Recusar
                   </Button>
                   <Button
+                    variant={"outline"}
                     onClick={() =>
                       onUpdateStatus(notification.id, "ACEITA")
                     }
