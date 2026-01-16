@@ -34,9 +34,9 @@ export interface PostResponseDTO {
   emailContratante:string,
   telContratante:string,
   desenvolvedorId: string | null;
-  developerName?: string;
-  developerRating?: number;
-  developerReview?: string;
+  nomeDesenvolvedor?: string;
+  nota?: number;
+  comentario?: string;
 }
 
 export interface SummaryPostDTO{

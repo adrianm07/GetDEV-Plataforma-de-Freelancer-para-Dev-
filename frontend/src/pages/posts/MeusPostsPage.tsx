@@ -1,4 +1,6 @@
+import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+
 import { toast } from "sonner";
 
 import { ManagePosts } from "../../components/contracts/ManagePosts";
@@ -13,6 +15,8 @@ import { getLoggedUser } from "../../services/auth.service";
 export function MyPostsPage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
+
 
   const userData = getLoggedUser();
 
@@ -31,8 +35,9 @@ export function MyPostsPage() {
   }
 
   useEffect(() => {
-    loadPosts();
-  }, []);
+  loadPosts();
+}, [location.pathname]);
+
 
   async function handleCreatePost(data: PostFormData) {
       try{
@@ -46,17 +51,10 @@ export function MyPostsPage() {
       }
   }
 
- async function handleUpdatePost(id: string, data: PostFormData) {
+async function handleUpdatePost(id: string, data: PostFormData) {
   try {
     await updatePost(id, mapFormToUpdatePostDTO(data));
-
-    setPosts(prev =>
-  prev.map(post =>
-    post.id === id
-      ? mapFormToPostUpdate(data, post)
-      : post
-  )
-);
+    await loadPosts();
 
     toast.success("Post atualizado com sucesso!");
   } catch (error) {

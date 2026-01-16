@@ -123,6 +123,7 @@ export function ManagePosts({
   };
 
   const handleCompleteProject = (post: Post) => {
+    console.log("Developer name on complete:", post.developerName);
     if (!post.developerName) {
       toast.error("Adicione o nome do desenvolvedor antes de concluir");
       return;
@@ -200,6 +201,7 @@ export function ManagePosts({
         {/* Posts */}
         <div className="space-y-4">
           {filteredPosts.map((post) => (
+            
             <div
               key={post.id}
               className={`rounded-xl p-6 border ${
@@ -245,7 +247,6 @@ export function ManagePosts({
                     >
                       Concluir
                     </Button>
-
                     {post.developerName && (
                       <Button
                         variant={"destructive"}

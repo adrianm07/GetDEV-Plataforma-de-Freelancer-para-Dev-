@@ -40,7 +40,7 @@ export function mapSummary(post : SummaryPostDTO) : ContractSummary{
 }
 export function mapPostResponseToPost(dto: PostResponseDTO): Post {
   return {
-    id: (dto.id), // ⚠️ backend manda string (UUID)
+    id: (dto.id),
     title: dto.titulo,
     description: dto.resumo,
     fullDescription: dto.descricao,
@@ -60,9 +60,9 @@ export function mapPostResponseToPost(dto: PostResponseDTO): Post {
     contractorName: dto.nomeContratante,
     contractorPhoto: dto.fotoContratante ?? null,
 
-    developerName: dto.developerName,
-    developerRating: dto.developerRating,
-    developerReview: dto.developerReview,
+    developerName: dto.nomeDesenvolvedor,
+    developerRating: dto.nota,
+    developerReview: dto.comentario,
 
     isCompleted: dto.status === "CONCLUIDO",
     completedDate: dto.dataConclusao,
