@@ -104,8 +104,8 @@ public class PostController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<List<SummaryPostDTO>> listarMe(Authentication authentication){
-        List<SummaryPostDTO> meusPosts = postService.listarMeusPosts(authentication);
+    public ResponseEntity<List<PostResponseDTO>> listarMe(Authentication authentication){
+        List<PostResponseDTO> meusPosts = postService.listarMeusPosts(authentication);
         return ResponseEntity.ok(meusPosts);
     }
 

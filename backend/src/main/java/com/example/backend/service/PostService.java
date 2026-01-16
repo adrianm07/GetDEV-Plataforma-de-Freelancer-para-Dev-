@@ -247,11 +247,11 @@ public class PostService {
         return posts.stream().map(SummaryPostDTO::fromEntity).toList();
     }
 
-    public List<SummaryPostDTO> listarMeusPosts(Authentication authentication){
+    public List<PostResponseDTO> listarMeusPosts(Authentication authentication){
         List<Post> posts;
         User user = (User) authentication.getPrincipal();
         posts = postRepository.findByContratanteId(user.getId());
-        return posts.stream().map(SummaryPostDTO::fromEntity).toList();
+        return posts.stream().map(PostResponseDTO::fromEntity).toList();
     }
 
 
