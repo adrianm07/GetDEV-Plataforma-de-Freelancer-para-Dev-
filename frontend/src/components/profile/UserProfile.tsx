@@ -15,7 +15,6 @@ export function UserProfile({
   user,
   canEdit = false,
   onEditProfile,
-  onProjectClick,
 }: UserProfileProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900">
@@ -104,8 +103,7 @@ export function UserProfile({
               {user.posts.map((summary) => (
                 <div
                   key={summary.id}
-                  onClick={() => onProjectClick?.(summary)}
-                  className="cursor-pointer rounded-lg p-5 bg-black/40 border border-purple-900/30 hover:border-purple-600/50 transition"
+                  className="p-5 bg-black/40 border border-purple-900/30"
                 >
                   <h3 className="text-white mb-2">
                     {summary.titulo}

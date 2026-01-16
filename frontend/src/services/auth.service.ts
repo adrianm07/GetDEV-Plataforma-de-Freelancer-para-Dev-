@@ -1,4 +1,4 @@
-import type { RegisterRequest, UserResponseMe } from "../types/user";
+import type { RegisterRequest } from "../types/user";
 import { api } from "./api";
 
 export function setAuthToken(token: string) {

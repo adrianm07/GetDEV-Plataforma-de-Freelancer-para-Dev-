@@ -7,8 +7,20 @@ import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "../ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
 import type {
@@ -43,7 +55,7 @@ export function EditProfile({
     email: userData.email,
     phone: userData.phone,
     photo: userData.photo,
-    description: userData.description??"",
+    description: userData.description ?? "",
     newPassword: "",
     confirmPassword: "",
   });
@@ -103,7 +115,8 @@ export function EditProfile({
       phone: formData.phone,
       photo: formData.photo,
       description: formData.description,
-      skills: userData.accountType === "DESENVOLVEDOR" ? skills : undefined,
+      skills:
+        userData.accountType === "DESENVOLVEDOR" ? skills : undefined,
       ...(formData.newPassword && { password: formData.newPassword }),
     };
 
@@ -120,10 +133,12 @@ export function EditProfile({
       <DialogContent className="bg-gradient-to-br from-gray-900 to-black border-purple-800/50 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Editar Perfil</DialogTitle>
+          <DialogDescription className="sr-only">
+            Formulário para edição das informações do perfil do usuário
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 mt-4">
-
           {/* Avatar */}
           <div className="flex flex-col items-center">
             <Label className="mb-3">Foto de Perfil</Label>
@@ -151,8 +166,8 @@ export function EditProfile({
           <div>
             <Label>Nome completo *</Label>
             <Input
-              className="bg-black/60 text-white placeholder:text-gray-400"
               required
+              className="bg-black/60 text-white"
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
@@ -164,9 +179,9 @@ export function EditProfile({
           <div>
             <Label>Email *</Label>
             <Input
-            className="bg-black/60 text-white placeholder:text-gray-400"
               type="email"
               required
+              className="bg-black/60 text-white"
               value={formData.email}
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
@@ -174,24 +189,27 @@ export function EditProfile({
             />
           </div>
 
+          {/* Descrição */}
           <div>
             <Label>Descrição</Label>
             <textarea
               className="w-full min-h-[120px] rounded-md bg-black/40 border border-purple-900/30 p-3 text-white"
               value={formData.description}
               onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
+                setFormData({
+                  ...formData,
+                  description: e.target.value,
+                })
               }
             />
           </div>
-
 
           {/* Tipo */}
           <div>
             <Label>Tipo de conta</Label>
             <Input
-            className="bg-black/60 text-white placeholder:text-gray-400"
               disabled
+              className="bg-black/60 text-white"
               value={
                 userData.accountType === "DESENVOLVEDOR"
                   ? "Desenvolvedor"
@@ -204,8 +222,9 @@ export function EditProfile({
           <div>
             <Label>Telefone *</Label>
             <Input
-            className="bg-black/60 text-white placeholder:text-gray-400"
               required
+              maxLength={15}
+              className="bg-black/60 text-white"
               value={formData.phone}
               onChange={(e) =>
                 setFormData({
@@ -213,7 +232,6 @@ export function EditProfile({
                   phone: formatPhone(e.target.value),
                 })
               }
-              maxLength={15}
             />
           </div>
 
@@ -221,11 +239,14 @@ export function EditProfile({
           <div>
             <Label>Nova senha</Label>
             <Input
-            className="bg-black/60 text-white placeholder:text-gray-400"
               type="password"
+              className="bg-black/60 text-white"
               value={formData.newPassword}
               onChange={(e) =>
-                setFormData({ ...formData, newPassword: e.target.value })
+                setFormData({
+                  ...formData,
+                  newPassword: e.target.value,
+                })
               }
             />
           </div>
@@ -234,8 +255,9 @@ export function EditProfile({
             <div>
               <Label>Confirmar nova senha</Label>
               <Input
-                type="password"
                 required
+                type="password"
+                className="bg-black/60 text-white"
                 value={formData.confirmPassword}
                 onChange={(e) =>
                   setFormData({
@@ -253,11 +275,14 @@ export function EditProfile({
               <Label>Habilidades</Label>
 
               <div className="flex gap-2 mt-2">
-                <Select value={selectedSkill} onValueChange={setSelectedSkill}>
+                <Select
+                  value={selectedSkill}
+                  onValueChange={setSelectedSkill}
+                >
                   <SelectTrigger>
-                    <SelectValue className = "text-black" placeholder="Selecionar habilidade" />
+                    <SelectValue placeholder="Selecionar habilidade" />
                   </SelectTrigger>
-                  <SelectContent >
+                  <SelectContent>
                     {availableSkills.map((skill) => (
                       <SelectItem key={skill} value={skill}>
                         {skill}
@@ -278,7 +303,10 @@ export function EditProfile({
                     className="flex items-center gap-2 px-3 py-1 rounded-full bg-purple-900/20 border border-purple-900/30"
                   >
                     {skill}
-                    <button onClick={() => removeSkill(skill)} type="button">
+                    <button
+                      type="button"
+                      onClick={() => removeSkill(skill)}
+                    >
                       <X className="w-4 h-4" />
                     </button>
                   </span>
@@ -289,7 +317,11 @@ export function EditProfile({
 
           {/* Actions */}
           <div className="flex gap-3">
-            <Button type="button" variant="secondary" onClick={onClose}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={onClose}
+            >
               Cancelar
             </Button>
             <Button type="submit">Salvar alterações</Button>
@@ -299,3 +331,4 @@ export function EditProfile({
     </Dialog>
   );
 }
+

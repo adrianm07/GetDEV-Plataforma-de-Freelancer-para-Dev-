@@ -91,7 +91,7 @@ export function Header({
 
                   <Avatar className="border-2 border-purple-600">
                     <AvatarImage src={user.photo ?? undefined} />
-                    <AvatarFallback>
+                    <AvatarFallback className="text-sm">
                       {user.name.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>

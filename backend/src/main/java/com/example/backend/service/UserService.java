@@ -5,6 +5,7 @@ import com.example.backend.dto.UserRegisterRequest;
 import com.example.backend.dto.UserResponseDTO;
 import com.example.backend.dto.UserUpdateRequest;
 import com.example.backend.exceptions.EmailJaCadastradoException;
+import com.example.backend.exceptions.ForbiddenException;
 import com.example.backend.model.enums.TipoUsuario;
 import com.example.backend.model.user.Contratante;
 import com.example.backend.model.user.Desenvolvedor;
@@ -13,6 +14,7 @@ import com.example.backend.repositories.PostRepository;
 import com.example.backend.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -54,10 +56,10 @@ public class UserService {
         User usuarioLogado = (User) authentication.getPrincipal();
 
         if(!usuarioLogado.getId().equals(id)){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sem permissão para editar esse usuário");
+            throw new ForbiddenException("Sem permissão para editar esse usuário");
         }
 
-        User user = userRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Usuário não encontrado"));
+        User user = userRepository.findById(id).orElseThrow(()-> new UsernameNotFoundException("Usuário não encontrado"));
 
 
 
@@ -91,9 +93,9 @@ public class UserService {
     }
 
     public UserResponseDTO getUser(UUID id){
-        User user = userRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Usuário nao encontrado"));
+        User user = userRepository.findById(id).orElseThrow(()-> new UsernameNotFoundException("Usuário nao encontrado!"));
         List<SummaryPostDTO> posts;
-        if(user.getRole()=="CONTRATANTE") {
+        if(user.getRole().equals("CONTRATANTE")) {
             posts = postRepository.findByContratanteId(user.getId()).stream().map(SummaryPostDTO::fromEntity).toList();
         }else{
             posts = postRepository.findByDesenvolvedorId(user.getId()).stream().map(SummaryPostDTO::fromEntity).toList();

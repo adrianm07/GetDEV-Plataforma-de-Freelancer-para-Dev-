@@ -1,26 +1,17 @@
 import { useEffect, useState } from "react";
 import { UserProfile } from "../../components/profile/UserProfile";
 import { EditProfile } from "../../components/profile/EditProfile";
-
 import type { UserProfileData, UpdateUserProfilePayload } from "../../types/user";
-import type { SummaryPost } from "../../types/project";
-
-import {
-  getUserById,
-  updateUserProfile,
-} from "../../services/userService";
-
-import { getLoggedUser } from "../../services/auth.service";
-
+import { getUserById, updateUserProfile } from "../../services/userService";
 import{mapUserToEditable} from "../../mapper/userMapper"
 import { useAuth } from "../../context/AuthContext";
+import { toast } from "sonner";
 
 
 
 export default function ProfilePage() {
   const [user, setUser] = useState<UserProfileData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const {userLogado} = useAuth();
 
@@ -28,24 +19,25 @@ export default function ProfilePage() {
     try {
       setLoading(true);
 
-      console.log("AAAAAAAAAAAAAAAA");
-      console.log(userLogado?.id);
       const user = await getUserById(userLogado?.id);
       setUser(user);
       
-    } catch (err: any) {
-      if (err.response?.status === 401) {
-        setError("Sessão expirada");
-      }
+    } catch (error: any) {
+      toast.error(error?.response?.data ?? "Erro ao buscar usuário!", {
+        duration: 2000,
+        position: "bottom-right"
+      });
+      
     } finally {
       setLoading(false);
     }
   }
 
- useEffect(() => {
-  if (!userLogado?.id) return;
-  loadUser();
-}, [userLogado]);
+  useEffect(() => {
+    if (!userLogado?.id) return;
+
+    loadUser();
+  }, [userLogado]);
 
   const handleSaveProfile = async (
     payload: UpdateUserProfilePayload
@@ -56,13 +48,15 @@ export default function ProfilePage() {
       await updateUserProfile(user.id, payload);
       await loadUser();
       setIsEditOpen(false);
-    } catch {
-      alert("Erro ao atualizar perfil");
+    } catch(error: any) {
+      toast.error(error?.response?.data ?? "Dados inseridos inválidos!", {
+        duration: 2000,
+        position: "bottom-right"
+      });
     }
   };
 
   if (loading) return <div>Carregando...</div>;
-  if (error) return <div>{error}</div>;
   if (!user) return null;
 
   return (
