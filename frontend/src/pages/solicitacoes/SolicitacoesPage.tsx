@@ -4,31 +4,33 @@ import { mapSolicitacaoToNotification } from "../../mapper/solicitacaoMapper";
 import type { NotificationDTO, NotificationStatus } from "../../types/notification";
 import { Notifications } from "../../components/Notifications";
 import { useAuth } from "../../context/AuthContext";
+import { toast } from "sonner";
 
 export function SolicitacoesPage(){
     const [notifications, setNotifications] = useState<NotificationDTO[]>([]);
-    const [loading, setLoading] = useState(true);
     const { userLogado } = useAuth();
 
     useEffect(() => {
         async function fetchNotifications(){
+            if (!userLogado) return;
+
             try{
                 const solicitacoes = await getSolicitacoesUsuarioLogado();
 
                 const mapped: NotificationDTO[] = solicitacoes.map(mapSolicitacaoToNotification);
                 setNotifications(mapped);
-            } catch(error){
-                console.error("Erro ao buscar as solicitacoes", error);
-            } finally{
-                setLoading(false);
+            } catch(error: any){
+                toast.error(error?.response?.data ?? "Erro ao buscar as solicitacoes!", {
+                    duration: 2000,
+                    position: "bottom-right",
+                });
             }
         }
 
         fetchNotifications();
-    }, []);
+    }, [userLogado]);
     
     async function handleUpdateStatus(id: string, status: NotificationStatus) {
-        setLoading(true);
 
         try{
             switch(status){
@@ -45,18 +47,13 @@ export function SolicitacoesPage(){
                     n.id === id ? { ...n, status } : n
                 )
             );
-        }catch(error){
-            console.error("Erro ao processar solicitação!", error);
-        }
-        finally{
-            setLoading(false);
+        }catch(error: any){
+            toast.error(error?.response?.data ?? "Erro ao alterar status da solicitacao!", {
+                duration: 2000,
+                position: "bottom-right",
+            });
         }
     }
-
-    if (loading) {
-        return <p className="text-white p-8">Carregando notificações...</p>;
-    }
-
     return(
         <Notifications
             notifications={notifications}

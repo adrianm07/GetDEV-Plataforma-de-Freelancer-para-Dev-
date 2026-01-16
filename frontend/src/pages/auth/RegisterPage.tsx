@@ -4,6 +4,7 @@ import { Register } from "../../components/auth/Register";
 import type { AccountType } from "../../types/accountType";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../../services/auth.service";
+import { toast } from "sonner";
 
 export interface RegisterFormData {
   name: string;
@@ -52,11 +53,10 @@ async function handleRegisterSuccess(data: RegisterFormData) {
 
     navigate("/auth/login");
   } catch (error: any) {
-  console.error("ERRO REGISTER:", error);
-  console.error("RESPONSE:", error?.response);
-  console.error("DATA:", error?.response?.data);
-
-  alert("Erro ao cadastrar usuário");
+    toast.error(error?.response?.data ?? "Erro ao criar conta!", {
+        duration: 2500,
+        position: "bottom-right",
+    });
 
 
 

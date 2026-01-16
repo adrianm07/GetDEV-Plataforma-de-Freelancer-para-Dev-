@@ -4,7 +4,7 @@ import { User } from "lucide-react";
 
 interface ContractCardProps {
   contract: ContractSummary;
-  onSelect?: (id: number) => void;
+  onSelect?: (id: string) => void;
 }
 
 export function ContractCard({ contract, onSelect }: ContractCardProps) {

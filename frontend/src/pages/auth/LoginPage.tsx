@@ -11,13 +11,13 @@ export function LoginPage() {
     try {
       await login(data.email, data.password);
       toast.success("Login realizado com sucesso!", {
-        duration: 3000,
+        duration: 2000,
         position: "bottom-right",
       });
       navigate("/posts");
     } catch (error: any) {
       toast.error(error?.response?.data ?? "Email ou senha invalidos", {
-        duration: 3000,
+        duration: 2000,
         position: "bottom-right",
       });
     }

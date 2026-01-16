@@ -6,6 +6,7 @@ import {
 } from "react";
 
 import { getPendingNotificationCount } from "../services/solicitacoes.service";
+import { useAuth } from "./AuthContext";
 
 interface NotificationContextData {
   pendingCount: number;
@@ -16,20 +17,22 @@ const NotificationContext = createContext({} as NotificationContextData);
 
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
   const [pendingCount, setPendingCount] = useState(0);
-
+  const { userLogado } = useAuth();
+  
   async function refreshPendingCount() {
+    if(!userLogado) return;
+
     try {
       const count = await getPendingNotificationCount();
       setPendingCount(count);
     } catch (err) {
-      console.error("Erro ao buscar notificações pendentes", err);
       setPendingCount(0);
     }
   }
 
   useEffect(() => {
     refreshPendingCount();
-  }, []);
+  }, [userLogado]);
 
   return (
     <NotificationContext.Provider

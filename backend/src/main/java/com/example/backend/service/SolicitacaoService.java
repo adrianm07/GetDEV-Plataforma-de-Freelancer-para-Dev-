@@ -1,7 +1,9 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.AvaliacaoDTO;
 import com.example.backend.dto.SolicitacaoResponseDTO;
+import com.example.backend.exceptions.PostJaPossuiDesenvolvedorException;
+import com.example.backend.exceptions.SolicitacaoJaAceitaException;
+import com.example.backend.exceptions.UnauthorizedUserException;
 import com.example.backend.model.enums.StatusPost;
 import com.example.backend.model.enums.StatusSolicitacao;
 import com.example.backend.model.post.Post;
@@ -10,11 +12,8 @@ import com.example.backend.model.user.Contratante;
 import com.example.backend.model.user.Desenvolvedor;
 import com.example.backend.model.user.User;
 import com.example.backend.repositories.SolicitacaoRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -45,10 +44,7 @@ public class SolicitacaoService {
                     .findByPost_ContratanteId(contratante.getId());
 
         } else {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "Usuário não autorizado"
-            );
+            throw new UnauthorizedUserException("Usuario não autorizado!");
         }
 
         return solicitacoes
@@ -64,11 +60,11 @@ public class SolicitacaoService {
         Desenvolvedor desenvolvedor = solicitacao.getDesenvolvedor();
 
         if(solicitacao.getStatus() == StatusSolicitacao.ACEITA){
-            throw new RuntimeException("Solicitação já aceita!");
+            throw new SolicitacaoJaAceitaException("Solicitação já aceita!");
         }
 
         if(post.getDesenvolvedor() != null || post.getStatus() == StatusPost.OCUPADO){
-            throw new RuntimeException("Post já possui Desenvolvedor aceito!");
+            throw new PostJaPossuiDesenvolvedorException("Post já possui Desenvolvedor aceito!");
         }
 
         post.setDesenvolvedor(desenvolvedor);
@@ -81,7 +77,7 @@ public class SolicitacaoService {
         Solicitacao solicitacao = solicitacaoRepository.findById(solicitacaoID).orElseThrow(() -> new RuntimeException("Solicitação não encontrada!"));
 
         if(solicitacao.getStatus() == StatusSolicitacao.ACEITA){
-            throw new RuntimeException("Solicitação já aceita!");
+            throw new SolicitacaoJaAceitaException("Solicitação desse projeto já foi aceita!");
         }
 
         solicitacaoRepository.delete(solicitacao);
