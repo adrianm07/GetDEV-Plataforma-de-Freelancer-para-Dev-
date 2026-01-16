@@ -251,7 +251,7 @@ export function ManagePosts({
                       <Button
                         variant={"destructive"}
                         onClick={() => handleRemoveDeveloper(post)}
-                        className="bg-orange"
+                        className="bg-orange-400"
                       >
                         Remover Dev
                       </Button>
