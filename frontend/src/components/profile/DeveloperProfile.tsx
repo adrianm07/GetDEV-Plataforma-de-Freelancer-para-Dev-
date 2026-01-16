@@ -1,29 +1,23 @@
-import { Mail, Phone, Code, Briefcase, ExternalLink } from "lucide-react";
+import { Mail, Phone, Code, Briefcase } from "lucide-react";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
 import type { Developer } from "../../types/developer";
-import type { Project } from "../../types/project";
+import type { SummaryPost } from "../../types/project";
 
 interface DeveloperProfileProps {
   isOpen: boolean;
   onClose: () => void;
   developer: Developer;
-  onProjectClick?: (project: Project) => void;
+  onProjectClick?: (project: SummaryPost) => void;
 }
 
 export function DeveloperProfile({
   isOpen,
   onClose,
   developer,
-  onProjectClick,
 }: DeveloperProfileProps) {
-  const handleProjectClick = (project: Project) => {
-    onClose();
-    onProjectClick?.(project);
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="bg-gradient-to-br from-gray-900 to-black border-purple-800/50 text-white max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -35,14 +29,14 @@ export function DeveloperProfile({
           {/* Avatar + Name */}
           <div className="flex items-center gap-4">
             <Avatar className="size-24 border-4 border-purple-600">
-              <AvatarImage src={developer.photo ?? undefined} />
+              <AvatarImage src={developer.foto ?? undefined} />
               <AvatarFallback>
-                {developer.name.charAt(0)}
+                {developer.nome.charAt(0)}
               </AvatarFallback>
             </Avatar>
 
             <div>
-              <h2 className="text-white">{developer.name}</h2>
+              <h2 className="text-white">{developer.nome}</h2>
               <p className="text-purple-400">Desenvolvedor</p>
             </div>
           </div>
@@ -66,7 +60,7 @@ export function DeveloperProfile({
             </a>
 
             <a
-              href={`https://wa.me/${developer.phone.replace(/\D/g, "")}`}
+              href={`https://wa.me/${developer.telefone.replace(/\D/g, "")}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 p-3 rounded-lg bg-black/50 border border-purple-900/30 hover:border-purple-600/50 transition"
@@ -74,7 +68,7 @@ export function DeveloperProfile({
               <Phone className="w-5 h-5 text-purple-400" />
               <div>
                 <p className="text-gray-400">Telefone / WhatsApp</p>
-                <p>{developer.phone}</p>
+                <p>{developer.telefone}</p>
               </div>
             </a>
           </section>
@@ -109,18 +103,18 @@ export function DeveloperProfile({
                     className="p-4 rounded-lg bg-black/50 border border-purple-900/30 hover:border-purple-600/50 transition"
                   >
                     <div className="flex justify-between mb-2">
-                      <h4>{project.name}</h4>
+                      <h4>{project.titulo}</h4>
                       <span className="text-sm text-gray-400">
-                        {project.completedDate}
+                        {project.prazo}
                       </span>
                     </div>
 
                     <p className="text-gray-300 mb-3">
-                      {project.description}
+                      {project.resumo}
                     </p>
 
                     <div className="flex flex-wrap gap-2 mb-3">
-                      {project.technologies.map((tech) => (
+                      {project.tecnologias.split(",").map((tech: string) => (
                         <span
                           key={tech}
                           className="px-2 py-1 text-sm rounded bg-purple-900/20 border border-purple-900/30 text-purple-300"
@@ -128,29 +122,6 @@ export function DeveloperProfile({
                           {tech}
                         </span>
                       ))}
-                    </div>
-
-                    <div className="flex gap-3">
-                      {project.link && (
-                        <a
-                          href={project.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-purple-400 hover:text-purple-300"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                          Acessar link
-                        </a>
-                      )}
-
-                      {onProjectClick && (
-                        <button
-                          onClick={() => handleProjectClick(project)}
-                          className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 transition"
-                        >
-                          Ver detalhes
-                        </button>
-                      )}
                     </div>
                   </div>
                 ))}

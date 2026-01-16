@@ -1,4 +1,4 @@
-import type { RegisterRequest } from "../types/user";
+import type { RegisterRequest, UserResponseMe } from "../types/user";
 import { api } from "./api";
 
 export function setAuthToken(token: string) {
@@ -20,7 +20,7 @@ export async function getLoggedUser() {
   try {
     const response = await api.get("/me");
     return response.data;
-  } 
+  }
   catch (err) {
     console.error("Erro ao buscar usuário logado:", err);
     return null;

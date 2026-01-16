@@ -21,8 +21,7 @@ export async function createPost(payload: createPostDTO): Promise<void> {
 }
 
 export async function updatePost(id:string, payload:any) {
-  const response = await api.put<SummaryPostDTO>(`/posts/${id}`, payload);
-  return response.data;
+  return await api.put(`/posts/${id}`, payload);
 }
 
 export async function deletePost(id:string) {
@@ -31,6 +30,13 @@ export async function deletePost(id:string) {
 
 export async function completePost(id:string) {
   await api.patch(`/posts/${id}/concluir`);
+}
+
+export async function enviarAvaliacao(postId: string, nota: number, comentario: string) {
+  return api.post(`/posts/${postId}/avaliacao`,{
+    nota, comentario});
+  
+  
 }
 
 

@@ -1,10 +1,12 @@
 import { Bell, LogOut } from "lucide-react";
 import { useState } from "react";
 
-import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
-import { LogoutConfirmation } from "../auth/LogoutConfirmation";
+import { Avatar, AvatarImage, AvatarFallback } from "../components/ui/avatar";
+import { LogoutConfirmation } from "../components/auth/LogoutConfirmation";
+import type { AccountType } from "../types/accountType";
 
-export type HeaderView = "contracts" | "profile" | "managePosts";
+export type HeaderView = "posts" | "profile" | "managePosts" | "solicitacoes";
+
 
 interface HeaderUser {
   name: string;
@@ -18,6 +20,7 @@ interface HeaderNavItem {
 
 interface HeaderProps {
   user?: HeaderUser;
+  role?: AccountType;
 
   notificationCount?: number;
   onNotificationsClick?: () => void;
@@ -31,6 +34,7 @@ interface HeaderProps {
 
 export function Header({
   user,
+  role,
   notificationCount = 0,
   onNotificationsClick,
   navItems,
@@ -45,49 +49,30 @@ export function Header({
     onLogout?.();
   }
 
+  const filteredNavItems =
+    role === "DESENVOLVEDOR"
+      ? navItems?.filter((item) => item.view !== "managePosts")
+      : navItems;
+
   return (
     <>
       <header className="sticky top-0 z-50 border-b border-purple-900/30 bg-black">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            {/* Left */}
-            <div className="flex items-center gap-8">
-              {/* Logo */}
+        <div className="mx-auto max-w-7xl">
+
+          <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+            {/* Esquerda */}
+            <div className="flex items-center gap-6">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-purple-900">
                 <span className="font-semibold text-white">TF</span>
               </div>
-
-              {/* Navigation */}
-              {navItems && onViewChange && (
-                <nav className="hidden md:flex gap-2">
-                  {navItems.map((item) => {
-                    const active = item.view === currentView;
-
-                    return (
-                      <button
-                        key={item.view}
-                        onClick={() => onViewChange(item.view)}
-                        className={`rounded-lg px-4 py-2 text-sm transition-colors ${
-                          active
-                            ? "border border-purple-900/50 bg-purple-900/30 text-purple-300"
-                            : "text-gray-400 hover:bg-purple-900/10 hover:text-purple-300"
-                        }`}
-                      >
-                        {item.label}
-                      </button>
-                    );
-                  })}
-                </nav>
-              )}
             </div>
 
-            {/* Right */}
+            {/* Direita */}
             <div className="flex items-center gap-4">
-              {/* Notifications */}
               {onNotificationsClick && (
                 <button
                   onClick={onNotificationsClick}
-                  className="relative rounded-lg border border-purple-900/30 bg-gray-900/50 p-2 transition-colors hover:bg-purple-900/20"
+                  className="relative rounded-lg border border-purple-900/30 bg-gray-900/50 p-2 hover:bg-purple-900/20"
                 >
                   <Bell className="h-5 w-5 text-purple-400" />
                   {notificationCount > 0 && (
@@ -98,7 +83,6 @@ export function Header({
                 </button>
               )}
 
-              {/* User */}
               {user && (
                 <div className="flex items-center gap-3">
                   <span className="hidden text-sm text-white sm:block">
@@ -106,10 +90,7 @@ export function Header({
                   </span>
 
                   <Avatar className="border-2 border-purple-600">
-                    <AvatarImage
-                      src={user.photo ?? undefined}
-                      alt={user.name}
-                    />
+                    <AvatarImage src={user.photo ?? undefined} />
                     <AvatarFallback>
                       {user.name.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
@@ -117,18 +98,40 @@ export function Header({
                 </div>
               )}
 
-              {/* Logout */}
               {onLogout && (
                 <button
                   onClick={() => setShowLogoutConfirmation(true)}
-                  className="group rounded-lg border border-purple-900/30 bg-gray-900/50 p-2 transition-colors hover:border-red-900/30 hover:bg-red-900/20"
-                  title="Sair"
+                  className="group rounded-lg border border-purple-900/30 bg-gray-900/50 p-2 hover:bg-red-900/20"
                 >
-                  <LogOut className="h-5 w-5 text-purple-400 transition-colors group-hover:text-red-400" />
+                  <LogOut className="h-5 w-5 text-purple-400 group-hover:text-red-400" />
                 </button>
               )}
             </div>
           </div>
+
+          {filteredNavItems && onViewChange && (
+            <div className="border-t border-purple-900/30 bg-black/50">
+              <nav className="flex gap-2 px-4 py-2 sm:px-6 lg:px-8">
+                {filteredNavItems.map((item) => {
+                  const active = item.view === currentView;
+
+                  return (
+                    <button
+                      key={item.view}
+                      onClick={() => onViewChange(item.view)}
+                      className={`rounded-lg px-4 py-2 text-sm transition-colors ${
+                        active
+                          ? "bg-purple-900/30 text-purple-300"
+                          : "text-gray-400 hover:bg-purple-900/10 hover:text-purple-300"
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
+          )}
         </div>
       </header>
 

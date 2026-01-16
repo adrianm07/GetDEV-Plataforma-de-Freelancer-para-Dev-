@@ -4,13 +4,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
 import type { Developer } from "../../types/developer";
-import type { Project } from "../../types/project";
+import type { SummaryPost } from "../../types/project";
 
 interface DeveloperProfileProps {
   isOpen: boolean;
   onClose: () => void;
   developer: Developer;
-  onProjectClick?: (project: Project) => void;
+  onProjectClick?: (project: SummaryPost) => void;
 }
 
 export function DeveloperProfile({
@@ -19,7 +19,7 @@ export function DeveloperProfile({
   developer,
   onProjectClick,
 }: DeveloperProfileProps) {
-  const handleProjectClick = (project: Project) => {
+  const handleProjectClick = (project: SummaryPost) => {
     onClose();
     onProjectClick?.(project);
   };
@@ -120,7 +120,7 @@ export function DeveloperProfile({
                     </p>
 
                     <div className="flex flex-wrap gap-2 mb-3">
-                      {project.technologies.map((tech) => (
+                      {project.technologies.map((tech: string) => (
                         <span
                           key={tech}
                           className="px-2 py-1 text-sm rounded bg-purple-900/20 border border-purple-900/30 text-purple-300"

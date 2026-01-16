@@ -18,7 +18,6 @@ interface ManagePostsProps {
   onDeletePost: (id: string) => void;
   onCompletePost: (
     id: string,
-    developerName: string,
     rating: number,
     review: string
   ) => Promise<void>;
@@ -307,7 +306,6 @@ export function ManagePosts({
           onSubmit={(rating, review) => {
             onCompletePost(
               postToRate.id,
-              postToRate.developerName!,
               rating,
               review
             );

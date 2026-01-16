@@ -6,10 +6,12 @@ import com.example.backend.model.enums.StatusPost;
 import com.example.backend.model.enums.StatusSolicitacao;
 import com.example.backend.model.post.Post;
 import com.example.backend.model.solicitacao.Solicitacao;
+import com.example.backend.model.user.Contratante;
 import com.example.backend.model.user.Desenvolvedor;
 import com.example.backend.model.user.User;
 import com.example.backend.repositories.SolicitacaoRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,19 +28,35 @@ public class SolicitacaoService {
         this.solicitacaoRepository = solicitacaoRepository;
     }
 
-    public List<SolicitacaoResponseDTO> listSolicitacoesDev(){
+    public List<SolicitacaoResponseDTO> listSolicitacoesUsuarioLogado(Authentication authentication) {
 
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = (User) authentication.getPrincipal();
 
-        if(!(user instanceof Desenvolvedor desenvolvedor)){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Voce nao tem permissão para ver as solicitações");
+        List<Solicitacao> solicitacoes;
+
+        if (user instanceof Desenvolvedor dev) {
+
+            solicitacoes = solicitacaoRepository
+                    .findByDesenvolvedorId(dev.getId());
+
+        } else if (user instanceof Contratante contratante) {
+
+            solicitacoes = solicitacaoRepository
+                    .findByPost_ContratanteId(contratante.getId());
+
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Usuário não autorizado"
+            );
         }
 
-        List<Solicitacao> solicitacoes = solicitacaoRepository.findByDesenvolvedorId(desenvolvedor.getId());
-
-        return solicitacoes.stream().map(SolicitacaoResponseDTO::new).toList();
-
+        return solicitacoes
+                .stream()
+                .map(SolicitacaoResponseDTO::new)
+                .toList();
     }
+
 
     public void aceitarSolicitacao(UUID solicitacaoID) {
         Solicitacao solicitacao = solicitacaoRepository.findById(solicitacaoID).orElseThrow(() -> new RuntimeException("Solicitação não encontrada!"));

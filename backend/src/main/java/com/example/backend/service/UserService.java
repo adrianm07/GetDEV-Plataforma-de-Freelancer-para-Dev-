@@ -12,6 +12,7 @@ import com.example.backend.model.user.User;
 import com.example.backend.repositories.PostRepository;
 import com.example.backend.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,15 +53,8 @@ public class UserService {
 
     }
 
-    public void update(UUID id, UserUpdateRequest request) {
-
-        String email = (String) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
-
-        User usuarioLogado = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+    public void update(UUID id, UserUpdateRequest request, Authentication authentication) {
+        User usuarioLogado = (User) authentication.getPrincipal();
 
         if(!usuarioLogado.getId().equals(id)){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Sem permissão para editar esse usuário");

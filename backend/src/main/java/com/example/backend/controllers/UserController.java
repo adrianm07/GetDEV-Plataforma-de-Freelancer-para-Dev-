@@ -7,6 +7,7 @@ import com.example.backend.repositories.UserRepository;
 import com.example.backend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +25,8 @@ public class UserController {
     public UserController(UserService userService){this.userService=userService;}
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateUser(@PathVariable UUID id, @RequestBody UserUpdateRequest request) {
-        userService.update(id,request);
+    public ResponseEntity<Void> updateUser(@PathVariable UUID id, @RequestBody UserUpdateRequest request, Authentication authentication) {
+        userService.update(id,request, authentication);
         return ResponseEntity.ok().build();
     }
 

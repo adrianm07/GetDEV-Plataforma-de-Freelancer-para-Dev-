@@ -19,8 +19,8 @@ import com.example.backend.model.user.User;
 import com.example.backend.repositories.PostRepository;
 import com.example.backend.repositories.SolicitacaoRepository;
 import com.example.backend.repositories.UserRepository;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -243,16 +243,9 @@ public class PostService {
         return posts.stream().map(SummaryPostDTO::fromEntity).toList();
     }
 
-    public List<SummaryPostDTO> listarMeusPosts(){
+    public List<SummaryPostDTO> listarMeusPosts(Authentication authentication){
         List<Post> posts;
-        String email = (String) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-
+        User user = (User) authentication.getPrincipal();
         posts = postRepository.findByContratanteId(user.getId());
         return posts.stream().map(SummaryPostDTO::fromEntity).toList();
     }
