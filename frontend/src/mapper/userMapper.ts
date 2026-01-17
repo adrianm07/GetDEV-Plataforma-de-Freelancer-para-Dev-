@@ -1,10 +1,7 @@
-import type { RegisterFormData } from "../pages/auth/RegisterPage";
-import type { AccountType } from "../types/accountType";
 import type {
   UserProfileData,
   EditableUserProfile,
   UpdateUserProfilePayload,
-  RegisterRequest,
   UserResponseMe,
   userData
 } from "../types/user";

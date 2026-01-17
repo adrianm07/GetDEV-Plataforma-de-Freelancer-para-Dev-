@@ -11,6 +11,7 @@ import { postToContract } from "../../mapper/postMapper";
 import { api } from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "sonner";
+import type { AccountType } from "../../types/accountType";
 
 export default function PagePost() {
   const { id } = useParams<{ id: string }>();
@@ -66,12 +67,13 @@ export default function PagePost() {
   }
 
   /* ---------- render ---------- */
+const role: AccountType = (userLogado?.role === "CONTRATANTE" ? "CONTRATANTE" : "DESENVOLVEDOR") as AccountType;
 
   return (
     <ContractDetails
       contract={contract}
       onBack={() => navigate("/posts")}
-      accountType={userLogado?.role}
+      accountType={role}
     />
   );
 }

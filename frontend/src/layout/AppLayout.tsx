@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { Header, type HeaderView } from "./Header";
 import { useState } from "react";
 import { useNotifications } from "../context/NotificationContext";
+import type { AccountType } from "../types/accountType";
 
 export function AppLayout() {
   const { userLogado, logout } = useAuth();
@@ -39,6 +40,7 @@ export function AppLayout() {
           break;
       }
   }
+const role: AccountType = (userLogado?.role === "CONTRATANTE" ? "CONTRATANTE" : "DESENVOLVEDOR") as AccountType;
 
   return (
     <>
@@ -47,11 +49,11 @@ export function AppLayout() {
           userLogado
             ? {
                 name: userLogado.name,
-                photo: userLogado.photo,
+                photo: userLogado.avatar,
               }
             : undefined
         }
-        role={userLogado?.role}
+        role={role}
         navItems={[
           { label: "Contratos", view: "posts" },
           { label: "Perfil", view: "profile" },

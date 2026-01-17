@@ -25,7 +25,7 @@ interface ManagePostsProps {
   ) => Promise<void>;
 }
 
-const EMPTY_FORM = (email: string): PostFormData => ({
+const EMPTY_FORM = (): PostFormData => ({
   title: "",
   description: "",
   fullDescription: "",
@@ -55,7 +55,6 @@ function validatePostForm(data: PostFormData): string | null {
 
 export function ManagePosts({
   posts,
-  userData,
   onCreatePost,
   onUpdatePost,
   onDeletePost,
@@ -67,7 +66,7 @@ export function ManagePosts({
   const [filter, setFilter] = useState<"active" | "completed">("active");
 
   const [formData, setFormData] = useState<PostFormData>(
-    EMPTY_FORM(userData.email)
+    EMPTY_FORM()
   );
 
   const [postToDelete, setPostToDelete] = useState<Post | null>(null);
@@ -81,7 +80,7 @@ export function ManagePosts({
   const completedCount = posts.filter(p => p.isCompleted).length;
 
   const openCreatePanel = () => {
-    setFormData(EMPTY_FORM(userData.email));
+    setFormData(EMPTY_FORM());
     setEditingId(null);
     setIsPanelOpen(true);
   };
@@ -95,7 +94,7 @@ export function ManagePosts({
     setFormData({
       title: post.title,
       description: post.description,
-      fullDescription: post.description || "",
+      fullDescription: post.fullDescription || "",
       technologies: post.technologies,
       deadline: post.deadline || "",
       minPrice: post.minPrice?.toString() ?? "",
