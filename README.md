@@ -68,7 +68,7 @@ Após subir os containers, acesse no navegador:
 
 ```arduino
 
-http://localhost:5173
+http://localhost:5173/auth/login
 ```
 ## 🗄️ Banco de Dados
 - PostgreSQL
