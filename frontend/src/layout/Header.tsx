@@ -56,8 +56,8 @@ export function Header({
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-purple-900/30 bg-black">
-        <div className="mx-auto max-w-7xl">
+      <header className="sticky top-0 z-50 border-b border-purple-900/30 bg-black w-full">
+        <div className="">
 
           <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
             {/* Esquerda */}
